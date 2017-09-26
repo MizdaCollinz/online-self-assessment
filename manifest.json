@@ -15,7 +15,7 @@
     //Browser Action - Create a menu?
      "browser_action" : {
          "default_title": "Online Assessment",
-         "default_popup": "popupMenu.html"
+         "default_popup": "./pages/popupMenu.html"
      },
 
     "permissions": [
