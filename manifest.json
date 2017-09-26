@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "Online time self assessment",
+    "version": "0.1",
+
+    // "default_locale": "en",
+    "description": "An extension that helps a user monitor and present their time spent online",
+
+    // "background" :{
+    //     //Event Page
+    //     "scripts" :[],
+    //     "persistent": false
+    // },
+
+    //Browser Action - Create a menu?
+     "browser_action" : {
+         "default_title": "Online Assessment",
+         "default_popup": "popupMenu.html"
+     },
+
+    "permissions": [
+        "history",
+        "tabs"
+    ]
+}
