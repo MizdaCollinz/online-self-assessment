@@ -6,11 +6,11 @@
     // "default_locale": "en",
     "description": "An extension that helps a user monitor and present their time spent online",
 
-    // "background" :{
-    //     //Event Page
-    //     "scripts" :[],
-    //     "persistent": false
-    // },
+    "background" :{
+        //Event Page
+        "scripts" :["./scripts/track.js"],
+        "persistent": false
+    },
 
     //Browser Action - Create a menu?
      "browser_action" : {
