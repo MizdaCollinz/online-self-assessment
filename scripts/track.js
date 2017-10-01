@@ -1,75 +1,110 @@
-let startTime
+let startTime, endTime, currentTrack, newTrack, key;
 let currentUrl = '';
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    console.log('Updated');
     if (changeInfo.status === "complete" && tab.active) {
         if (tab.url != 'chrome://newtab/' && tab.url != '') {
             if (currentUrl != tab.url) {
-                chrome.storage.local.get('${currentUrl}', function(result) {
-                    if (result.start == 'undefined') {
-                        startTime = new Date();
-                        let obj = {
-                            'start': startTime,
-                            'end': 0,
-                            'total': 0
-                        };
-
-                        chrome.storage.local.set({'${tab.url}': obj});
-                        currentUrl = tab.url;
-                    } else {
-                        //idk why using startTime instead of result.start works but eh
-                        result.end = new Date() - startTime;
-                        result.total = result.total + result.end;
-                        console.log('time on site: ' + currentUrl + ' = ' + result.end);
-                        startTime = new Date();
-                        console.log('new time: ' + startTime);
-                        let newObj = {
-                            'start': startTime,
-                            'end': 0,
-                            'total': 0
-                        };
-
-                        chrome.storage.local.set({'{$tab.url}': newObj});
-                        currentUrl = tab.url;
+                key = tab.url;
+                currentTrack = new Promise(function(resolve, reject) {
+                    if (currentUrl != '') {
+                        chrome.storage.local.get(`${currentUrl}`, function(result) {
+                            resolve(result[`${currentUrl}`]);
+                        });
                     }
                 });
+                newTrack = new Promise(function(resolve, reject) {
+                    chrome.storage.local.get(`${key}`, function(result) {
+                        resolve(result[`${key}`]);
+                    });
+                });
+
+                createAndSet(tab);
             }
         }
     }
 });
-
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-    console.log('Removed');
-
-    chrome.storage.local.get('${currentUrl}', function(result) {
-        result.end = new Date() - startTime;
-        result.total = result.total + result.end;
-        console.log('time on site: ' + currentUrl + ' = ' + result.end);
+    currentTrack = new Promise(function(resolve, reject) {
+        if (currentUrl != '') {
+            chrome.storage.local.get(`${currentUrl}`, function(result) {
+                resolve(result[`${currentUrl}`]);
+            });
+        }
     });
+
+    updateCurrent();
 });
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-    console.log('Activated');
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         if (tab.url != 'chrome://newtab/' && tab.url != '') {
             if (currentUrl != tab.url) {
-                chrome.storage.local.get('${currentUrl}', function(result) {
-                    //idk why using startTime instead of result.start works but eh
-                    result.end = new Date() - startTime;
-                    result.total = result.total + result.end;
-                    console.log('time on site: ' + currentUrl + ' = ' + result.end);
-                    startTime = new Date();
-                    console.log('new time: ' + startTime);
-                    let newObj = {
-                        'start': startTime,
-                        'end': 0,
-                        'total': 0
-                    };
-
-                    chrome.storage.local.set({'{$tab.url}': newObj});
-                    currentUrl = tab.url;
+                key = tab.url;
+                currentTrack = new Promise(function(resolve, reject) {
+                    if (currentUrl != '') {
+                        chrome.storage.local.get(`${currentUrl}`, function(result) {
+                            resolve(result[`${currentUrl}`]);
+                        });
+                    }
                 });
+                newTrack = new Promise(function(resolve, reject) {
+                    chrome.storage.local.get(`${key}`, function(result) {
+                        resolve(result[`${key}`]);
+                    });
+                });
+
+                createAndSet(tab);
             }
         }
     });
 });
+
+function createAndSet(tab) {
+    newTrack.then(function(resolvedObj) {
+        let obj;
+        if (typeof resolvedObj === 'undefined') {
+            startTime = new Date();
+            obj = {
+                'visits' : [{
+                    'historyitem' : {},
+                    'time' : {
+                        'start' : `${startTime}`,
+                        'end' : '0'
+                    }
+                }],
+                'tags' : []
+            };
+        } else {
+            startTime = new Date();
+            let newVisit = {
+                'historyitem' : {},
+                'time' : {
+                    'start' : `${startTime}`,
+                    'end' : '0'
+                }
+            };
+            resolvedObj.visits.push(newVisit);
+            obj = resolvedObj;
+        }
+        let dataObj = {};
+        dataObj[key] = obj;
+        chrome.storage.local.set(dataObj);
+
+        updateCurrent();
+
+        return tab.url;
+    }).then(function(newUrl) {
+        currentUrl = newUrl;
+    });
+}
+
+function updateCurrent() {
+    currentTrack.then(function(prevObj) {
+        let lastVisit = prevObj.visits[prevObj.visits.length - 1];
+        endTime = new Date();
+        lastVisit.time.end = `${endTime}`;
+        let dataObj = {};
+        dataObj[currentUrl] = prevObj;
+        chrome.storage.local.set(dataObj);
+    });
+}
