@@ -3,8 +3,10 @@ let currentUrl = '';
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === "complete" && tab.active) {
         if (tab.url != 'chrome://newtab/' && tab.url != '') {
-            if (currentUrl != tab.url) {
-                key = tab.url;
+            let newUrl = new URL(tab.url);
+            let domain = newUrl.hostname;
+            if (currentUrl != domain) {
+                key = domain;
                 currentTrack = new Promise(function(resolve, reject) {
                     if (currentUrl != '') {
                         chrome.storage.local.get(`${currentUrl}`, function(result) {
@@ -38,8 +40,10 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
 chrome.tabs.onActivated.addListener(function (activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
         if (tab.url != 'chrome://newtab/' && tab.url != '') {
-            if (currentUrl != tab.url) {
-                key = tab.url;
+            let newUrl = new URL(tab.url);
+            let domain = newUrl.hostname;
+            if (currentUrl != domain) {
+                key = domain;
                 currentTrack = new Promise(function(resolve, reject) {
                     if (currentUrl != '') {
                         chrome.storage.local.get(`${currentUrl}`, function(result) {
@@ -92,7 +96,7 @@ function createAndSet(tab) {
 
         updateCurrent();
 
-        return tab.url;
+        return new URL(tab.url).hostname;
     }).then(function(newUrl) {
         currentUrl = newUrl;
     });
