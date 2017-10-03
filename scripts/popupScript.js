@@ -37,4 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    let button = document.querySelectorAll('button');
+    button[0].addEventListener('click', openPage);
 });
