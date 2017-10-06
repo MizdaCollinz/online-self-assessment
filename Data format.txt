@@ -1,0 +1,10 @@
+tags		{"social media", "productivity", "entertainment", "other" }
+
+urls		
+{
+	www.facebook.com
+	{
+	visits: [ {historyitem, time}, {historyitem, time} ]	// Custom data type
+	tags:["social media", "productivity"]
+	}
+}
