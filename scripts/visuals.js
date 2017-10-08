@@ -38,7 +38,9 @@ async function getTotalVisits(website){
             duration += getVisitDuration(element);
         }, this);
 
-        return duration;
+        let tags = resolved.tags;
+
+        return [duration,tags];
         
     });
     return total;
@@ -49,7 +51,9 @@ async function chartTotals(){
 
     
     let visitDurations = [];
+    let tagDurations = {};
 
+    //Retrieve list of websites (keys in local storage)
     websites = new Promise(
         (resolve,reject) => {
             chrome.storage.local.get(null,function(results){
@@ -65,9 +69,23 @@ async function chartTotals(){
     let keys = Object.keys(results);
 
     for(let key of keys){
-        let value = await getTotalVisits(key);
+        let total = await getTotalVisits(key);
+
+        console.log(total);
+
+        let value = total[0];
+        let tags = total[1];
+
+        for(let tag of tags){
+            if(tagDurations[tag] == undefined){
+                tagDurations[tag] = 0;
+            }
+            tagDurations[tag] += parseInt(value);
+        }
+        
         visitDurations.push([key,value]); 
     }
+   
 
     //Sort map of site : visit duration
     visitDurations.sort(function(a,b) {
@@ -88,11 +106,22 @@ async function chartTotals(){
         values.push(visitDurations[i][1]);
     }
 
-    console.log(labels);
+    //Retrieve tag data
+    console.log(tagDurations);
+    let tagset = Object.keys(tagDurations);
+    let tagvalues = [];
+    for(let tag of tagset){
+        tagvalues.push(tagDurations[tag]);
+    }
 
+    console.log(tagset);
+    console.log(tagvalues);
 
-    let ctx = document.getElementById("myChart").getContext('2d');
-    let myChart = buildChart(ctx, 'doughnut', labels, values);
+    let totalContext = document.getElementById("totalChart").getContext('2d');
+    let myChart = buildChart(totalContext, 'doughnut', labels, values);
+
+    let tagContext = document.getElementById("tagChart").getContext('2d');
+    let tagChart = buildChart(tagContext,'doughnut', tagset, tagvalues);
 
 }
 
