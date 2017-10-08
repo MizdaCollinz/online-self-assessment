@@ -2,7 +2,7 @@ let startTime, endTime, currentTrack, newTrack, key;
 let currentUrl = '';
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === "complete" && tab.active) {
-        if (tab.url != 'chrome://newtab/' && tab.url != '') {
+        if (tab.url != 'chrome://newtab/' && tab.url != '' && (tab.url.startsWith('http') || tab.url.startsWith('www'))) {
             let newUrl = new URL(tab.url);
             let domain = newUrl.hostname;
             if (currentUrl != domain) {
