@@ -21,7 +21,8 @@ chrome.history.onVisited.addListener(function(result){
 });
 
 function createDomainItem(){
-
+    entryTransition = getTransition(currentHistoryItem);
+    currentDomainItem = {entryUrl:currentHistoryItem.url, internalClicks:0, transition:entryTransition};
 }
 
 function getDomainItem(){
@@ -41,5 +42,5 @@ function getURL(historyItem){
 }
 
 function getTransition(historyItem){    
-
+    return "";
 }
