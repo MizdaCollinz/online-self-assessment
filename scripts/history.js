@@ -3,8 +3,6 @@ let currentDomainItem;
 
 chrome.history.onVisited.addListener(function(result){
     currentHistoryItem = result;
-    createDomainItem();
-    console.log(currentDomainItem);
     /*  Logging stuff
     console.log("ID: " + currentHistoryItem.id);
     console.log("URL: "+ currentHistoryItem.url);    
@@ -25,14 +23,6 @@ chrome.history.onVisited.addListener(function(result){
 function createDomainItem(){
     entryTransition = getTransition(currentHistoryItem);
     currentDomainItem = {entryUrl:currentHistoryItem.url, internalClicks:0, transition:entryTransition};
-}
-
-function getDomainItem(){
-    return currentDomainItem;
-}
-
-function setDomainItem(domainItem){
-    currentDomainItem = domainItem;
 }
 
 function incrementInternalClicks(historyItem){
