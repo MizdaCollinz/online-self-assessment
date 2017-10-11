@@ -8,7 +8,7 @@ const borderColours = ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255,
 
 
 // Build a chart with the provided discrete label set and data values
-function buildChart (context, chartType, chartLabels, chartData) {
+function buildChart(context, chartType, chartLabels, chartData) {
 
    return new Chart(context, {
         type: chartType, // Pie, Bar
@@ -25,6 +25,32 @@ function buildChart (context, chartType, chartLabels, chartData) {
     });
 
 }
+
+// Build a line graph with the provided dataset and specified time span to look over (in days)
+function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, timeSpan) {
+    let datasetsArray = [];
+    for (let i = 0; i < datasetLabels.length; i++) {
+        datasetsArray.push({
+            label: datasetLabels[i],
+            data: datasetValues[i],
+            fill: false,
+            //backgroundColor: getBorderColours(i),
+            //borderColor: getBorderColours(i),
+            lineTension: 0.1
+        })
+    }
+
+    return new Chart(context, {
+        type: 'line',
+        data: {
+            labels: xLabels,
+            datasets: datasetsArray
+        },
+        options: {}
+    });
+}
+
+
 
 //Retrieve the specified number of colours for use 
 function getColours(quantity){

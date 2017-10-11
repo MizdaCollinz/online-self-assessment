@@ -23,6 +23,48 @@ function getVisitDuration(visit) {
     return duration;
 }
 
+// Return single day visit duration in seconds
+function getSingleDayVisitDuration(visit, day) {
+    // let compareDay = Number("" + day.getFullYear() + day.getMonth() + day.getDate());
+    // console.log("Compare day: " + compareDay);
+
+    // let start = new Date(visit.time.start);
+    // let startDay = Number("" + start.getFullYear() + start.getMonth() + start.getDate());
+    // console.log("start date: " + startDay);
+    
+    // let end = new Date(visit.time.end);
+    // let endDay = Number("" + end.getFullYear() + end.getMonth() + end.getDate());
+    // console.log("end date: " + endDay);
+    let compareDay = new Date(day);
+    compareDay.setHours(0,0,0,0);
+
+    let startDay = new Date(visit.time.start);
+    let tempStartDay = new Date(visit.time.start);
+    tempStartDay.setHours(0,0,0,0);
+
+    let endDay = new Date(visit.time.end);
+    let tempEndDay = new Date(visit.time.end);
+    tempEndDay.setHours(0,0,0,0);
+
+    // TODO: Need to take into account overlapping days
+    if (tempEndDay < compareDay) {
+        return 0;
+    } else if (tempStartDay > compareDay) {
+        return 0;
+    } else {
+        let duration = getTime(startDay, endDay);
+        
+        //Case often occurs when the end time is undefined (Tab is still open, the visit is ongoing)
+        if (duration < 0) {
+            return 0; //Don't return invalid values
+        }
+        console.log("A duration:" + duration);
+        return duration;
+    }
+
+
+}
+
 //Return promise to retrieve information about a website
 function getWebsite(website) {
     return new Promise(
@@ -52,6 +94,24 @@ async function getTotalVisits(website) {
     });
 
     return total;
+}
+
+// Return the total visit duration of a single day
+async function getSingleDayVisits(website, day) {
+
+    let singleDayTotal = await getWebsite(website).then(function (resolved) {
+        let visits = resolved.visits;
+        let duration = 0;
+
+        visits.forEach(function (element) {
+            //console.log(day);
+            duration += getSingleDayVisitDuration(element, day);
+        }, this);
+
+        return duration;
+    });
+
+    return singleDayTotal;
 }
 
 //Retrieve list of websites (keys in local storage)
@@ -173,6 +233,60 @@ function buildTables() {
     }
 }
 
+// Produce line grpah of visited websites
+function buildLineGraphs() {
+    
+    // Retrieve top 6 most visited sites from history
+    let sites = 6;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+
+    let xLabels = [];
+    let datasetLabels = [];
+    let datasetValues = [];
+
+    // Generate x axis labels
+    let dateSpan = 10;
+    for (let i = 0; i < dateSpan; i++) {
+        let curDate = new Date();
+        curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
+        //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+        
+        xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+    }
+
+
+    // Iterates through top 6 sites
+    for (i = 0; i < sites; i++) {
+        // Adds each line for each website
+        let tempWebsiteVar = visitDurations[i][0];
+        console.log(tempWebsiteVar);
+        datasetLabels.push(tempWebsiteVar);
+
+        
+        
+        // Iterates through specified dateSpan of history
+        let websiteValues = [];
+        for (let j = 0; j < dateSpan; j++) {
+            curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
+            //console.log(curDate.getDate());
+
+            getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
+                websiteValues.push(resolve);
+            });
+            
+        }
+        console.log(websiteValues);
+        datasetValues.push(websiteValues);
+    }
+
+    let lineContext = document.getElementById("lineGraph").getContext('2d');
+    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, dateSpan);
+}
+
+
 //Convert seconds to formatted hour/min/sec
 function fromSeconds(seconds){
     let m = moment.duration(seconds,'seconds');
@@ -204,6 +318,7 @@ async function setup() {
     await calculateTotals();
     chartTotals();
     buildTables();
+    buildLineGraphs();
 }
 
 setup();
