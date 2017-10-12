@@ -19,8 +19,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                         resolve(result[`${key}`]);
                     });
                 });
-
                 createAndSet(tab);
+            }else {
+                // If the page is within the same domain as the one before, add to the counter.
+                incrementInternalClicks();
             }
         }
     }
@@ -66,6 +68,10 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 function createAndSet(tab) {
     newTrack.then(function(resolvedObj) {
         let obj;
+
+        // Create a new domain item for the current domain, and set it to active.
+        createDomainItem();
+
         if (typeof resolvedObj === 'undefined') {
             startTime = new Date();
             obj = {
@@ -107,6 +113,8 @@ function updateCurrent() {
         let lastVisit = prevObj.visits[prevObj.visits.length - 1];
         endTime = new Date();
         lastVisit.time.end = `${endTime}`;
+        //Save the current domain item into local storage
+        lastVisit.historyitem = currentDomainItem;
         let dataObj = {};
         dataObj[currentUrl] = prevObj;
         chrome.storage.local.set(dataObj);

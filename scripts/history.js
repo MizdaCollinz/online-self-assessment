@@ -3,11 +3,12 @@ let currentDomainItem;
 let historyQueryCompleted;
 let domainQueryCompleted;
 
+// Promise-based implementation currently suffers from race conditions.
+
 chrome.history.onVisited.addListener(function(result){
-    
     // Set up the asynchonous calls to the history APIs
     currentHistoryItem = result;
-    
+
     /*
     // Promise-based setup
     historyQueryCompleted = new Promise(function(resolve, reject){
@@ -18,9 +19,6 @@ chrome.history.onVisited.addListener(function(result){
         });
     });
     */
-    
-    // Create and set up the domain history object
-    createDomainItem();
 
     /*
     // Promise-based setup
@@ -36,9 +34,16 @@ chrome.history.onVisited.addListener(function(result){
 
 // Instantiate the domain item object.
 function createDomainItem(){
+    if (currentHistoryItem == null){
+        chrome.history.search({url:tab.url}, function(results){
+            let index = results.length - 1;
+            currentHistoryItem = results[index];
+            createDomainItem();
+            return;
+        });
+    }
     entryTransition = getTransitionFromHistory(currentHistoryItem, function(entryTransition){
         currentDomainItem = {entryUrl:currentHistoryItem.url, internalClicks:0, transition:entryTransition};
-        console.log(currentDomainItem);
     });
 }
 
@@ -49,7 +54,6 @@ function incrementInternalClicks(){
 
 // Returns the transition for a history item by getting it's most recent visit item.
 function getTransitionFromHistory(historyItem, callback){
-
 // Callback-based implementation
     let urlWrapper = {url:historyItem.url};  
     chrome.history.getVisits(urlWrapper, function(results){
@@ -67,7 +71,6 @@ function getTransitionFromHistory(historyItem, callback){
 
 // Returns the the transition for a domain item by getting it's most recent visit item.
 function getTransitionFromDomain(domainItem, callback){ 
-
 // Callback-based implementation
     let urlWrapper = {url:domainItem.entryUrl};  
     chrome.history.getVisits(urlWrapper, function(results){
