@@ -1,0 +1,15 @@
+.collapsible-header {
+    font-weight : 400;
+    font-family: Roboto, sans-serif;
+    color:whitesmoke;
+}
+
+#main-head {
+    font-weight: 500;
+}
+
+ul.collapsible {
+    width:90%;
+    margin: 0 auto;
+    margin-bottom: 100px;
+}
