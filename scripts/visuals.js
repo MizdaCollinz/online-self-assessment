@@ -25,16 +25,6 @@ function getVisitDuration(visit) {
 
 // Return single day visit duration in seconds
 function getSingleDayVisitDuration(visit, day) {
-    // let compareDay = Number("" + day.getFullYear() + day.getMonth() + day.getDate());
-    // console.log("Compare day: " + compareDay);
-
-    // let start = new Date(visit.time.start);
-    // let startDay = Number("" + start.getFullYear() + start.getMonth() + start.getDate());
-    // console.log("start date: " + startDay);
-    
-    // let end = new Date(visit.time.end);
-    // let endDay = Number("" + end.getFullYear() + end.getMonth() + end.getDate());
-    // console.log("end date: " + endDay);
     let compareDay = new Date(day);
     compareDay.setHours(0,0,0,0);
 
@@ -58,7 +48,6 @@ function getSingleDayVisitDuration(visit, day) {
         if (duration < 0) {
             return 0; //Don't return invalid values
         }
-        console.log("A duration:" + duration);
         return duration;
     }
 
@@ -104,7 +93,6 @@ async function getSingleDayVisits(website, day) {
         let duration = 0;
 
         visits.forEach(function (element) {
-            //console.log(day);
             duration += getSingleDayVisitDuration(element, day);
         }, this);
 
@@ -176,7 +164,7 @@ function chartTotals() {
     let values = [];
 
     for (let i = 0; i < sites; i++) {
-        labels.push(visitDurations[i][0]);
+        labels.push(cutName(visitDurations[i][0]));
         values.push(visitDurations[i][1]);
     }
 
@@ -207,7 +195,7 @@ function buildTables() {
 
     let includedPercentage = 0;
     for (let i=0; i<8; i++) {
-        let name = visitDurations[i][0];
+        let name = cutName(visitDurations[i][0]);
         let value = visitDurations[i][1];
         let percentage = value * 100 / total;
         includedPercentage += percentage; //Build total of covered durations, to determine what is leftover
@@ -261,7 +249,6 @@ function buildLineGraphs() {
     for (i = 0; i < sites; i++) {
         // Adds each line for each website
         let tempWebsiteVar = visitDurations[i][0];
-        console.log(tempWebsiteVar);
         datasetLabels.push(tempWebsiteVar);
 
         
@@ -271,14 +258,12 @@ function buildLineGraphs() {
         for (let j = 0; j < dateSpan; j++) {
             curDate = new Date();
             curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
-            //console.log(curDate.getDate());
 
             getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
                 websiteValues.push(resolve);
             });
             
         }
-        console.log(websiteValues);
         datasetValues.push(websiteValues);
     }
 
@@ -294,6 +279,7 @@ function fromSeconds(seconds){
     return `${values[0]}h ${values[1]}m ${values[2]}s `;
 }
 
+//Build a table row HTML element
 function buildRow(name, value) {
 
     let row = document.createElement('tr');
@@ -310,6 +296,16 @@ function buildRow(name, value) {
     row.appendChild(perCell);
     
     return row;
+}
+
+
+//Remove www from url names
+function cutName(website){
+    let url = website;
+    if (url.startsWith("www.")){
+        url = url.replace('www.','');
+    }
+    return url;
 }
 
 

@@ -67,3 +67,12 @@ function getBorderColours(quantity){
     }
     return borderColours.slice(0, quantity);
 }
+
+//Remove www from url names
+function cutName(website){
+    let url = website;
+    if (url.startsWith("www.")){
+        url = url.replace('www.','');
+    }
+    console.log(url);
+}
