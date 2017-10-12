@@ -33,41 +33,63 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="section">
-            <div class="row">
-                
-                <div class="left col l3 m6 s4">
-                    <table class="striped" id="totalTable">
-                        <thead>
-                            <th>Website</th>
-                            <th>Total Online Time</th>
-                        </thead>
-                    </table>
-                </div>
-                
-                <div class="col l3 m6 s6 charts">
-                    <canvas id="totalChart" width="400" height="500"></canvas>
-                    <h5 class="center condensed-light">Most Visited Sites</h3>
-                </div>
-            
-                <div class="col l3 m6 s6 charts">
-                    <canvas id="tagChart" width="400" height="500"></canvas>
-                    <h5 class="center condensed-light">Most Visited Tags</h3>
-                </div>
+    
 
-                <div class="right col l3 m6 s6">
-                    <table class="striped" id="tagTable">
-                        <thead>
-                            <th>Tag Name</th>
-                            <th>Total Online Time</th>
-                        </thead>
-                    </table>
+    <ul class="collapsible" data-collapsible="expandable">
+        <li>
+            <div class="collapsible-header active">Pie Graphs?</div>
+            <div class="collapsible-body container">
+                <div class="section">
+                    <div class="row">
+                        
+                        <div class="left col l3 m6 s4">
+                            <table class="striped" id="totalTable">
+                                <thead>
+                                    <th>Website</th>
+                                    <th>Total Online Time</th>
+                                </thead>
+                            </table>
+                        </div>
+                        
+                        <div class="col l3 m6 s6 charts">
+                            <canvas id="totalChart" width="400" height="500"></canvas>
+                            <h5 class="center condensed-light">Most Visited Sites</h3>
+                        </div>
+                    
+                        <div class="col l3 m6 s6 charts">
+                            <canvas id="tagChart" width="400" height="500"></canvas>
+                            <h5 class="center condensed-light">Most Visited Tags</h3>
+                        </div>
+        
+                        <div class="right col l3 m6 s6">
+                            <table class="striped" id="tagTable">
+                                <thead>
+                                    <th>Tag Name</th>
+                                    <th>Total Online Time</th>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+                <br><br>
             </div>
-        </div>
-        <br><br>
-    </div>
+        </li>
+        <li>
+            <div class="collapsible-header">Line Graphs?</div>
+            <div class="collapsible-body container">
+                <div class="section">
+                    <div class="row">
+                        
+                        <div class="charts">
+                            <h5 class="center condensed-light">Line graph of visits</h5>
+                            <canvas id="lineGraph" width="1280" height="720"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </li>
+    </ul>
 
     <footer class="page-footer red darken-2">
         <div class="footer-copyright">
