@@ -249,7 +249,7 @@ function buildLineGraphs() {
     for (i = 0; i < sites; i++) {
         // Adds each line for each website
         let tempWebsiteVar = visitDurations[i][0];
-        datasetLabels.push(tempWebsiteVar);
+        datasetLabels.push(cutName(tempWebsiteVar));
 
         
         
