@@ -312,6 +312,17 @@ function buildRow(name, value) {
     return row;
 }
 
+// Redraws the line graph depending on dropdown input
+function redrawLineGraph(time) {
+    console.log("time to redraw:" + time);
+
+}
+
+$('#14days').click(function() {
+    $('#lineGraphDropdownBtn').dropdown('close');
+    redrawLineGraph('14');
+    return false;
+});
 
 async function setup() {
     //Let the async functions populate data before proceeding
