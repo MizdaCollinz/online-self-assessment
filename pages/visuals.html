@@ -37,12 +37,12 @@
 
     <ul class="collapsible" data-collapsible="expandable">
         <li>
-            <div class="collapsible-header active">Pie Graphs?</div>
+            <div class="collapsible-header active">Total Visit Time</div>
             <div class="collapsible-body container">
                 <div class="section">
                     <div class="row">
                         
-                        <div class="left col l3 m6 s4">
+                        <div class="col l6 m6 s6">
                             <table class="striped" id="totalTable">
                                 <thead>
                                     <th>Website</th>
@@ -51,17 +51,22 @@
                             </table>
                         </div>
                         
-                        <div class="col l3 m6 s6 charts">
+                        <div class="col l6 m6 s6 charts">
                             <canvas id="totalChart" width="400" height="500"></canvas>
                             <h5 class="center condensed-light">Most Visited Sites</h3>
                         </div>
-                    
-                        <div class="col l3 m6 s6 charts">
-                            <canvas id="tagChart" width="400" height="500"></canvas>
-                            <h5 class="center condensed-light">Most Visited Tags</h3>
-                        </div>
-        
-                        <div class="right col l3 m6 s6">
+
+                    </div> <!-- close row -->
+
+                </div> <!-- close section-->
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">Most Visited Tags</div>
+            <div class="collapsible-body container">
+                <div class ="section">
+                    <div class="row">        
+                        <div class="col l6 m6 s6">
                             <table class="striped" id="tagTable">
                                 <thead>
                                     <th>Tag Name</th>
@@ -69,13 +74,17 @@
                                 </thead>
                             </table>
                         </div>
-                    </div>
-                </div>
-                <br><br>
+                            
+                        <div class="col l6 m6 s6 charts">
+                            <canvas id="tagChart" width="400" height="500"></canvas>
+                            <h5 class="center condensed-light">Most Visited Tags</h3>
+                        </div> 
+                    </div> <!-- close row -->
+                </div> <!-- close section -->
             </div>
         </li>
         <li>
-            <div class="collapsible-header">Line Graphs?</div>
+            <div class="collapsible-header">Line Graphs</div>
             <div class="collapsible-body container">
                 <div class="section">
                     <div class="row">
