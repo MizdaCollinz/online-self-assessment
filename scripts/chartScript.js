@@ -34,8 +34,8 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
             label: datasetLabels[i],
             data: datasetValues[i],
             fill: false,
-            //backgroundColor: getBorderColours(i),
-            //borderColor: getBorderColours(i),
+            backgroundColor: colours[i],
+            borderColor: borderColours[i],
             lineTension: 0.1
         })
     }
