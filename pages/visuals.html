@@ -15,14 +15,19 @@
 
 <body>
     <nav class="red darken-4" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">OTSA</a>
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo">OTSA</a>
             <ul class="right hide-on-med-and-down">
                 <!-- Do we have a button to put here? -->
-                <li><a href="">Settings</a></li>
+                <li>
+                    <a href="">Settings</a>
+                </li>
             </ul>
 
             <ul id="nav-mobile" class="side-nav">
-                <li><a href="#">Settings</a></li>
+                <li>
+                    <a href="#">Settings</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -33,54 +38,52 @@
         </div>
     </div>
 
-    
+
 
     <ul class="collapsible" data-collapsible="accordion">
         <li>
             <div class="collapsible-header active red">Total Visit Time</div>
             <div class="collapsible-body container">
-                <div class="section">
-                    <div class="row">
-                        
-                        <div class="col l6 m6 s6">
-                            <table class="striped" id="totalTable">
-                                <thead>
-                                    <th>Website</th>
-                                    <th>Total Online Time</th>
-                                </thead>
-                            </table>
-                        </div>
-                        
-                        <div class="col l6 m6 s6 charts">
-                            <canvas id="totalChart" width="400" height="350"></canvas>
-                            <h5 class="center condensed-light">Most Visited Sites</h3>
-                        </div>
+                <div class="section pies">
 
-                    </div> <!-- close row -->
+                    <div class="charts">
+                        <canvas id="totalChart" class="center" width="400" height="350"></canvas>
+                        <h5 class="center condensed-light">Most Visited Sites</h3>
+                    </div>
 
-                </div> <!-- close section-->
+
+                    <div class="tables">
+                        <table id="totalTable">
+                            <thead>
+                                <th>Website</th>
+                                <th>Overall Time</th>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- close section-->
             </div>
         </li>
         <li>
             <div class="collapsible-header red white-text">Most Visited Tags</div>
             <div class="collapsible-body container">
-                <div class ="section">
-                    <div class="row">        
-                        <div class="col l6 m6 s6">
-                            <table class="striped" id="tagTable">
-                                <thead>
-                                    <th>Tag Name</th>
-                                    <th>Total Online Time</th>
-                                </thead>
-                            </table>
-                        </div>
-                            
-                        <div class="col l6 m6 s6 charts">
-                            <canvas id="tagChart" width="400" height="300"></canvas>
-                            <h5 class="center condensed-light">Most Visited Tags</h3>
-                        </div> 
-                    </div> <!-- close row -->
-                </div> <!-- close section -->
+                <div class="section pies">
+                    <div class="charts">
+                        <canvas id="tagChart" width="400" height="350"></canvas>
+                        <h5 class="center condensed-light">Most Visited Tags</h3>
+                    </div>
+
+                    <div>
+                        <table class="tables" id="tagTable">
+                            <thead>
+                                <th>Tag Name</th>
+                                <th>Overall Time</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!-- close section -->
             </div>
         </li>
         <li>
@@ -88,14 +91,15 @@
             <div class="collapsible-body container">
                 <div class="section">
                     <div class="row">
-                        
-                        <div class="charts">
+
+                        <div>
                             <h5 class="center condensed-light">Line graph of visits</h5>
                             <canvas id="lineGraph" width="500" height="250"></canvas>
                         </div>
                     </div>
                 </div>
-                <br><br>
+                <br>
+                <br>
             </div>
         </li>
     </ul>
@@ -103,7 +107,8 @@
     <footer class="page-footer red darken-2">
         <div class="footer-copyright">
             <div class="container">
-                Made by <a class="red-text text-lighten-3" href="http://materializecss.com">Us</a>
+                Made by
+                <a class="red-text text-lighten-3" href="http://materializecss.com">Us</a>
             </div>
         </div>
     </footer>

@@ -1,15 +1,72 @@
+#main-head {
+    font-weight: 500;
+}
+
+/* Collapsible units containing graphs */
+ul.collapsible {
+    width:90%;
+    margin: 0 auto;
+    margin-bottom: 100px;
+}
+
 .collapsible-header {
     font-weight : 400;
     font-family: Roboto, sans-serif;
     color:whitesmoke;
 }
 
-#main-head {
-    font-weight: 500;
+/* Graph data tables */
+
+tr th {
+    color: whitesmoke;
+    background-color: rgba(26, 35, 126,0.9);
+    padding-left: 15px;
+    border-radius: 0px;
+    text-align: center;
 }
 
-ul.collapsible {
-    width:90%;
-    margin: 0 auto;
-    margin-bottom: 100px;
+tr td {
+    padding:15px;
+    color:whitesmoke;
+    background-color: rgba(63, 81, 181, 0.8);
+    border-radius: 0px;
+    text-align: center;
+}
+
+.charts, .tables {
+    margin: 0px 10px;
+}
+
+.pies {
+    display: flex;
+    align-items: center;
+}
+
+.charts {
+    width: 59%;
+}
+
+.tables {
+    width: 40%;
+}
+
+@media only screen and (max-width : 720px) {
+    .charts, .tables {
+        display: block;
+        margin: auto;
+    }
+    table {
+        margin: auto;
+    }
+
+    .pies{
+        display: unset;
+    }
+}
+
+@media only screen and (min-width : 721px){
+    .charts, .tables {
+        display: inline-block;
+        
+    }
 }

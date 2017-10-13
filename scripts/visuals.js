@@ -1,6 +1,6 @@
 let visitDurations = []; // Entries are [websitename,totalvisits]
 let tagDurations = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
-
+let sites = 6; //Number of unique sites shown in total site visits 
 
 //Return duration between two dates
 function getTime(startTime, endTime) {
@@ -154,9 +154,8 @@ async function calculateTotals() {
 //Produce a chart of visit totals
 function chartTotals() {
 
-    //Retrieve top 8 most visited sites from history
-    let sites = 8;
-    if (visitDurations.length < 8) {
+    //Retrieve top 5 most visited sites from history
+    if (visitDurations.length < 5) {
         sites = visitDurations.length;
     }
 
@@ -168,6 +167,7 @@ function chartTotals() {
         values.push(visitDurations[i][1]);
     } 
 
+    //Calculate the total for all other sites
     let total = 0;
     for (i=sites; i< visitDurations.length; i++) {
         total += visitDurations[i][1];
@@ -193,7 +193,6 @@ function chartTotals() {
 
 //Produce a table of the visit totals
 function buildTables() {
-
     let totalTable = document.getElementById("totalTable");
     let total = 0;
     for (let site of visitDurations){
@@ -201,7 +200,7 @@ function buildTables() {
     }
 
     let includedPercentage = 0;
-    for (let i=0; i<8; i++) {
+    for (let i=0; i<sites; i++) {
         let name = cutName(visitDurations[i][0]);
         let value = visitDurations[i][1];
         let percentage = value * 100 / total;
@@ -292,10 +291,13 @@ function buildRow(name, value) {
     let row = document.createElement('tr');
 
     let nameCell = document.createElement('td');
+    nameCell.style.minWidth = "180px";
+    nameCell.style.fontWeight = "500";
     let nameNode = document.createTextNode(name);
     nameCell.appendChild(nameNode);
 
     let perCell = document.createElement('td');
+    perCell.style.minWidth = "100px";
     let perNode = document.createTextNode(value);
     perCell.appendChild(perNode);
 
