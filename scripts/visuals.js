@@ -154,9 +154,9 @@ async function calculateTotals() {
 //Produce a chart of visit totals
 function chartTotals() {
 
-    //Retrieve top 6 most visited sites from history
-    let sites = 6;
-    if (visitDurations.length < 6) {
+    //Retrieve top 8 most visited sites from history
+    let sites = 8;
+    if (visitDurations.length < 8) {
         sites = visitDurations.length;
     }
 
@@ -166,7 +166,14 @@ function chartTotals() {
     for (let i = 0; i < sites; i++) {
         labels.push(cutName(visitDurations[i][0]));
         values.push(visitDurations[i][1]);
+    } 
+
+    let total = 0;
+    for (i=sites; i< visitDurations.length; i++) {
+        total += visitDurations[i][1];
     }
+    labels.push("Other");
+    values.push(total);
 
     //Retrieve tag data
     let tagset = Object.keys(tagDurations);
@@ -176,10 +183,10 @@ function chartTotals() {
     }
 
     let totalContext = document.getElementById("totalChart").getContext('2d');
-    let myChart = buildChart(totalContext, 'doughnut', labels, values);
+    let myChart = buildPieChart(totalContext, labels, values);
 
     let tagContext = document.getElementById("tagChart").getContext('2d');
-    let tagChart = buildChart(tagContext, 'doughnut', tagset, tagvalues);
+    let tagChart = buildPieChart(tagContext, tagset, tagvalues);
 
 }
 

@@ -8,9 +8,9 @@ const borderColours = ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255,
 
 
 // Build a chart with the provided discrete label set and data values
-function buildChart(context, chartType, chartLabels, chartData) {
+function buildChart(context, chartType, chartLabels, chartData, extras) {
 
-   return new Chart(context, {
+    let chartJson = Object.assign({ //Combine extras object into defined one
         type: chartType, // Pie, Bar
         data: { 
             labels: chartLabels,
@@ -22,7 +22,39 @@ function buildChart(context, chartType, chartLabels, chartData) {
             }]
         }
         
-    });
+    }, extras);
+
+    console.log(chartJson);
+
+   return new Chart(context, chartJson);
+
+}
+
+function buildPieChart(context, chartLabels, chartData){
+
+    //Set tooltips to show name and percentage
+    let extras = {
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let dataset = data.datasets[0];
+                        let total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        
+                        let currentName = data.labels[tooltipItem.index];
+                        let currentValue = dataset.data[tooltipItem.index];
+                        let percentage = (currentValue*100/total).toFixed(2);
+                
+                        return `${currentName} - ${percentage}%`;
+                    }
+                }
+            }
+        }  
+    } 
+
+    return buildChart(context,'doughnut',chartLabels,chartData,extras);
 
 }
 
