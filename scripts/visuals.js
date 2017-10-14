@@ -313,7 +313,7 @@ function buildRow(name, value) {
 }
 
 // Redraws the line graph depending on dropdown input
-async function redrawLineGraph(time) {
+async function drawLineGraph(time) {
     console.log("time to redraw:" + time);
     let lineContext = document.getElementById("lineGraph").getContext('2d');
     
@@ -344,15 +344,18 @@ async function redrawLineGraph(time) {
     
 }
 
+// JQuery for dynamically updating line graph from dropdown selection
 $('#14days').click(function() {
+    $('#lineGraphDropdownBtn').text("14 days");
     $('#lineGraphDropdownBtn').dropdown('close');
-    redrawLineGraph('14');
+    drawLineGraph('14');
     return false;
 });
 
 $('#12weeks').click(function() {
+    $('#lineGraphDropdownBtn').text("12 weeks");    
     $('#lineGraphDropdownBtn').dropdown('close');
-    redrawLineGraph('12');
+    drawLineGraph('12');
     return false;
 });
 
@@ -380,7 +383,7 @@ function generatexLabels(dateSpan) {
     return xLabels;
 }
 
-
+// Generates datasets for line graph plot
 async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
 // Iterates through top 6 sites
     for (i = 0; i < sites; i++) {
@@ -411,7 +414,7 @@ async function setup() {
     await calculateTotals();
     chartTotals();
     buildTables();
-    buildLineGraphs();
+    drawLineGraph('14');
 }
 
 setup();
