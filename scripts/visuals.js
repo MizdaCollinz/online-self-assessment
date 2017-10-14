@@ -1,5 +1,5 @@
-let visitDurations = []; // Entries are [websitename,totalvisits]
-let tagDurations = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
+let visitDurations1 = []; // Entries are [websitename,totalvisits]
+let tagDurations1 = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
 
 
 //Return duration between two dates
@@ -25,16 +25,6 @@ function getVisitDuration(visit) {
 
 // Return single day visit duration in seconds
 function getSingleDayVisitDuration(visit, day) {
-    // let compareDay = Number("" + day.getFullYear() + day.getMonth() + day.getDate());
-    // console.log("Compare day: " + compareDay);
-
-    // let start = new Date(visit.time.start);
-    // let startDay = Number("" + start.getFullYear() + start.getMonth() + start.getDate());
-    // console.log("start date: " + startDay);
-    
-    // let end = new Date(visit.time.end);
-    // let endDay = Number("" + end.getFullYear() + end.getMonth() + end.getDate());
-    // console.log("end date: " + endDay);
     let compareDay = new Date(day);
     compareDay.setHours(0,0,0,0);
 
@@ -61,8 +51,6 @@ function getSingleDayVisitDuration(visit, day) {
         //console.log("A duration:" + duration);
         return duration;
     }
-
-
 }
 
 //Return promise to retrieve information about a website
@@ -132,7 +120,7 @@ async function calculateTotals() {
         return websites;
     })
     let websiteList = Object.keys(webResults);
-    tagDurations['Untagged'] = 0;
+    tagDurations1['Untagged'] = 0;
 
     //Iterate through websites with stored visits
     for (let websiteName of websiteList) {
@@ -144,21 +132,21 @@ async function calculateTotals() {
         //Iterate through tags stored for this website
         for (let tag of tags) {
             //Add to tag total visit time
-            if (tagDurations[tag] == undefined) {
-                tagDurations[tag] = 0;
+            if (tagDurations1[tag] == undefined) {
+                tagDurations1[tag] = 0;
             } 
-            tagDurations[tag] += parseInt(visitDuration);
+            tagDurations1[tag] += parseInt(visitDuration);
         }
 
         if(tags == undefined || tags.length == 0){
-            tagDurations['Untagged'] += parseInt(visitDuration);
+            tagDurations1['Untagged'] += parseInt(visitDuration);
         }
 
-        visitDurations.push([websiteName, visitDuration]);
+        visitDurations1.push([websiteName, visitDuration]);
     }
 
     //Sort map of site to visit duration
-    visitDurations.sort(function (a, b) {
+    visitDurations1.sort(function (a, b) {
         return b[1] - a[1];
     });
 }
@@ -168,23 +156,23 @@ function chartTotals() {
 
     //Retrieve top 6 most visited sites from history
     let sites = 6;
-    if (visitDurations.length < 6) {
-        sites = visitDurations.length;
+    if (visitDurations1.length < 6) {
+        sites = visitDurations1.length;
     }
 
     let labels = [];
     let values = [];
 
     for (let i = 0; i < sites; i++) {
-        labels.push(visitDurations[i][0]);
-        values.push(visitDurations[i][1]);
+        labels.push(visitDurations1[i][0]);
+        values.push(visitDurations1[i][1]);
     }
 
     //Retrieve tag data
-    let tagset = Object.keys(tagDurations);
+    let tagset = Object.keys(tagDurations1);
     let tagvalues = [];
     for (let tag of tagset) {
-        tagvalues.push(tagDurations[tag]);
+        tagvalues.push(tagDurations1[tag]);
     }
 
     let totalContext = document.getElementById("totalChart").getContext('2d');
@@ -201,14 +189,14 @@ function buildTables() {
 
     let totalTable = document.getElementById("totalTable");
     let total = 0;
-    for (let site of visitDurations){
+    for (let site of visitDurations1){
         total += site[1]; //Build a total of all visit durations
     }
 
     let includedPercentage = 0;
     for (let i=0; i<8; i++) {
-        let name = visitDurations[i][0];
-        let value = visitDurations[i][1];
+        let name = visitDurations1[i][0];
+        let value = visitDurations1[i][1];
         let percentage = value * 100 / total;
         includedPercentage += percentage; //Build total of covered durations, to determine what is leftover
         //Build values into a row and insert into the table
@@ -220,72 +208,18 @@ function buildTables() {
     totalTable.appendChild(row);
     
     let tagTable = document.getElementById("tagTable");
-    let tagSet = Object.keys(tagDurations);
+    let tagSet = Object.keys(tagDurations1);
 
     //Populate Tag Table
     for(let j=0; j<tagSet.length; j++){
         let name = tagSet[j];
-        let value = tagDurations[name];
+        let value = tagDurations1[name];
 
         //Build row and insert
         let row = buildRow(name, fromSeconds(value));
         tagTable.appendChild(row);
     }
 }
-
-// Produce line grpah of visited websites
-function buildLineGraphs() {
-    
-    // Retrieve top 6 most visited sites from history
-    let sites = 6;
-    if (visitDurations.length < 6) {
-        sites = visitDurations.length;
-    }
-
-    let xLabels = [];
-    let datasetLabels = [];
-    let datasetValues = [];
-
-    // Generate x axis labels
-    let dateSpan = 10;
-    for (let i = 0; i < dateSpan; i++) {
-        let curDate = new Date();
-        curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
-        //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-        
-        xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-    }
-
-
-    // Iterates through top 6 sites
-    for (i = 0; i < sites; i++) {
-        // Adds each line for each website
-        let tempWebsiteVar = visitDurations[i][0];
-        console.log(tempWebsiteVar);
-        datasetLabels.push(tempWebsiteVar);
-
-        
-        
-        // Iterates through specified dateSpan of history
-        let websiteValues = [];
-        for (let j = 0; j < dateSpan; j++) {
-            curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
-            //console.log(curDate.getDate());
-
-            getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                websiteValues.push(resolve);
-            });
-            
-        }
-        console.log(websiteValues);
-        datasetValues.push(websiteValues);
-    }
-
-    let lineContext = document.getElementById("lineGraph").getContext('2d');
-    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, dateSpan);
-}
-
 
 //Convert seconds to formatted hour/min/sec
 function fromSeconds(seconds){
@@ -316,31 +250,8 @@ function buildRow(name, value) {
 async function drawLineGraph(time) {
     console.log("time to redraw:" + time);
     let lineContext = document.getElementById("lineGraph").getContext('2d');
-    
-    // Retrieve top 6 most visited sites from history
-    let sites = 6;
-    if (visitDurations.length < 6) {
-        sites = visitDurations.length;
-    }
-    
-    let xLabels = [];
-    let tempDataset = [];
-    let datasetLabels = [];
-    let datasetValues = [];
-    
-    
-    // If time selected is 14 days or 12 weeks
-    if (time === '14') {
-        xLabels = generatexLabels(14);
-        await generateDatasets(sites, 14, datasetLabels, datasetValues);
-    } else if (time === '12') {
-        // date span specifed is 12 weeks
-        xLabels = generatexLabels(12);
-        await generateDatasets(sites, 12, datasetLabels, datasetValues);
-    }
-    console.log("datalabels: " + datasetLabels);
-    console.log("datavalues: " + datasetValues);
-    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
+    let lineBundle = getLineBundle(time);
+    let lineChart = buildSingleLineGraph(lineContext, lineBundle[0], lineBundle[1], lineBundle[2], 1);
     
 }
 
@@ -359,62 +270,11 @@ $('#12weeks').click(function() {
     return false;
 });
 
-// Generates xLabels for line graph depending on how long and what scale it is measured in
-function generatexLabels(dateSpan) {
-    let xLabels = [];
-    if (dateSpan === 14) {
-        for (let i = 0; i < dateSpan; i++) {
-            let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
-            //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-            
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-        }
-    } else if (dateSpan === 12) {
-        for (let i = 0; i < dateSpan; i++) {
-            let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + i*7);
-            console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-            
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-        }
-    }
-
-    return xLabels;
-}
-
-// Generates datasets for line graph plot
-async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
-// Iterates through top 6 sites
-    for (i = 0; i < sites; i++) {
-        // Adds each line for each website
-        let tempWebsiteVar = visitDurations[i][0];
-        console.log(tempWebsiteVar);
-        datasetLabels.push(tempWebsiteVar);
-
-        // Iterates through specified dateSpan of history
-        let websiteValues = [];
-        for (let j = 0; j < dateSpan; j++) {
-            curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
-            //console.log(curDate.getDate());
-
-            await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                websiteValues.push(resolve);
-            });
-            
-        }
-        console.log(websiteValues);
-        datasetValues.push(websiteValues);
-    }
-}
-
 async function setup() {
     //Let the async functions populate data before proceeding
     await calculateTotals();
     chartTotals();
     buildTables();
-    drawLineGraph('14');
 }
 
 setup();
