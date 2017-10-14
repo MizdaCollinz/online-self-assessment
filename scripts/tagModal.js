@@ -9,7 +9,7 @@ $('.modal').modal({
     endingTop: '10%', // Ending top style attribute
     ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
         let table = document.getElementById('siteTable');
-        buildSiteTable(table);
+        buildSiteTable(table.getElementsByTagName('tbody')[0]);
     },
     complete: function() { } // Callback for Modal close
   }
@@ -50,10 +50,8 @@ async function getUntagged(){
 
 
 // Get sites that dont have tags
-async function buildSiteTable(table){
-    if(buildTable){
-        buildTable = false;
-
+async function buildSiteTable(tbody){
+        tbody.innerHTML = "";
         let untaggedSites = await getUntagged();
 
         for (let site of untaggedSites){
@@ -71,7 +69,7 @@ async function buildSiteTable(table){
             let button = document.createElement('button');
             button.className = "modal-button";
             button.innerText = "Add Tag";
-            button.onclick = function(){
+            button.onclick = async function(){
                 let tr = this.closest('tr');
                 let td = tr.getElementsByTagName('td')[0]; //Website name is in first column
                 let website = td.getAttribute('url');
@@ -80,20 +78,28 @@ async function buildSiteTable(table){
                 let dropdown = parent.getElementsByTagName('select')[0];
                 let tag = $(dropdown).val();
                 
-                addNewTag(website, tag);
-
-                parent.innerHTML += "&#10004";
+                let result = await addNewTag(website, tag);
+                if ( result == true) {
+                    let tick = document.createTextNode("\u2714");
+                    parent.appendChild(tick);
+                }
             };
             col2.appendChild(dropdown);
             col2.appendChild(button);
-            table.appendChild(row);
+            tbody.appendChild(row);
         }
-    }
-    
 }
 
 function getTagset(){
-    return Object.keys(tagDurations);
+    let defaultTags = ["SNS","Productivity","Entertainment","Other"];
+    let usedTags = Object.keys(tagDurations);
+    
+    for(let tag of usedTags){
+        if(!defaultTags.includes(tag)){
+            defaultTags.push(tag);
+        }
+    }
+    return defaultTags;
 }
 
 function createDropdown(){
@@ -119,24 +125,24 @@ function createDropdown(){
 
 function addNewTag(website, tag){
 
-    let newTag = new Promise(function(resolve,reject) {
+    return newTag = new Promise(function(resolve,reject) {
         chrome.storage.local.get(`${website}`, function(result){
             resolve(result[`${website}`]);
         });
     }).then(function(resolvedObj) {
         let tags = resolvedObj.tags;
         if (tags.includes(tag)){
-            return;
+            return false;
         } else {
             if(tags != undefined){
                 tags.push(tag);
             }
+            let object = {};
+            object[website] = resolvedObj;
+            //Set new tags back in the storage
+            chrome.storage.local.set(object);
+            return true;
         }
- 
-        let object = {};
-        object[website] = resolvedObj;
-        //Set new tags back in the storage
-        chrome.storage.local.set(object);
     });
            
 }
