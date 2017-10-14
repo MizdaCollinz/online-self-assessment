@@ -1,0 +1,127 @@
+#main-head {
+    font-weight: 500;
+}
+
+/* Nav Bar */
+
+nav ul a:hover {
+    background-color: rgba(0,0,0,0.5);
+}
+
+/* Collapsible units containing graphs */
+ul.collapsible {
+    width:90%;
+    margin: 0 auto;
+    margin-bottom: 100px;
+}
+
+.collapsible-header {
+    font-weight : 400;
+    font-family: Roboto, sans-serif;
+    color:whitesmoke;
+}
+
+/* Graph data tables */
+
+tr th {
+    color: whitesmoke;
+    background-color: #e53935; 
+    padding-left: 15px;
+    border-radius: 50px;
+    text-align: center;
+}
+
+tr td {
+    padding:15px;
+    border-radius: 0px;
+    text-align: center;
+}
+
+thead {
+    border-bottom: none;
+}
+
+.charts, .tables {
+    margin: 0px 10px;
+}
+
+.pies {
+    display: flex;
+    align-items: center;
+}
+
+.charts {
+    width: 59%;
+}
+
+.tables {
+    width: 40%;
+}
+
+@media only screen and (max-width : 720px) {
+    .charts, .tables {
+        margin: auto;
+    }
+    .tables {
+        margin-top: 50px;
+        width: unset;
+    }
+    
+    .pies {
+        display: unset;
+    }
+
+}
+
+/* Modal Styling */
+
+.modal-content{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.modal table {
+    margin: auto;
+    width: 75%;
+    font-size: 1.1em;
+}
+
+.modal th {
+    background-color: #424242;
+}
+
+.modal select {
+    width:100px;
+    height:30px;
+    display:unset;
+    font-size: 0.9em;
+}
+
+.modal h4 {
+    font-weight: bold;
+}
+
+.modal td {
+    padding: 0px;
+    padding-top: 5px;
+    background-color: white;
+}
+
+.modal th {
+    border-radius: 0px;
+}
+
+.modal-button {
+    margin: 5px;
+    font-size: 0.9em;
+}
+
+.modal-footer {
+    font-weight: bold;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width:100%;
+}
