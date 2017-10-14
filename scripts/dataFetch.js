@@ -248,9 +248,21 @@ async function buildInitialLineGraph() {
 }
 
 async function fetchInitialData() {
-    await calculateTotals();
-    console.log(visitDurations);
-    await prefetchDays();
+    let calculateTotalPromise = new Promise((resolve, reject) => {
+        calculateTotals();
+        resolve();
+    });
+
+    let prefetchDaysPromise = new Promise((resolve, reject) => {
+        prefetchDays();
+        resolve();
+    })
+
+    calculateTotalPromise.then(() => {
+        console.log(visitDurations);
+    });
+    //await calculateTotals();
+    //await prefetchDays();
     await prefetchWeeks();
     await bundleLineData('14');
     await bundleLineData('12');
@@ -260,8 +272,8 @@ async function fetchInitialData() {
     
 }
 
-console.log("dataFecth");
-fetchInitialData().then(() => {
-    console.log("finished fetching initial data");
-    buildInitialLineGraph();
-});
+// console.log("dataFecth");
+// fetchInitialData().then(() => {
+//     console.log("finished fetching initial data");
+//     //buildInitialLineGraph();
+// });

@@ -156,23 +156,23 @@ function chartTotals() {
 
     //Retrieve top 6 most visited sites from history
     let sites = 6;
-    if (visitDurations1.length < 6) {
-        sites = visitDurations1.length;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
     }
 
     let labels = [];
     let values = [];
 
     for (let i = 0; i < sites; i++) {
-        labels.push(visitDurations1[i][0]);
-        values.push(visitDurations1[i][1]);
+        labels.push(visitDurations[i][0]);
+        values.push(visitDurations[i][1]);
     }
 
     //Retrieve tag data
-    let tagset = Object.keys(tagDurations1);
+    let tagset = Object.keys(tagDurations);
     let tagvalues = [];
     for (let tag of tagset) {
-        tagvalues.push(tagDurations1[tag]);
+        tagvalues.push(tagDurations[tag]);
     }
 
     let totalContext = document.getElementById("totalChart").getContext('2d');
@@ -189,14 +189,14 @@ function buildTables() {
 
     let totalTable = document.getElementById("totalTable");
     let total = 0;
-    for (let site of visitDurations1){
+    for (let site of visitDurations){
         total += site[1]; //Build a total of all visit durations
     }
 
     let includedPercentage = 0;
     for (let i=0; i<8; i++) {
-        let name = visitDurations1[i][0];
-        let value = visitDurations1[i][1];
+        let name = visitDurations[i][0];
+        let value = visitDurations[i][1];
         let percentage = value * 100 / total;
         includedPercentage += percentage; //Build total of covered durations, to determine what is leftover
         //Build values into a row and insert into the table
@@ -208,12 +208,12 @@ function buildTables() {
     totalTable.appendChild(row);
     
     let tagTable = document.getElementById("tagTable");
-    let tagSet = Object.keys(tagDurations1);
+    let tagSet = Object.keys(tagDurations);
 
     //Populate Tag Table
     for(let j=0; j<tagSet.length; j++){
         let name = tagSet[j];
-        let value = tagDurations1[name];
+        let value = tagDurations[name];
 
         //Build row and insert
         let row = buildRow(name, fromSeconds(value));
@@ -272,9 +272,17 @@ $('#12weeks').click(function() {
 
 async function setup() {
     //Let the async functions populate data before proceeding
-    await calculateTotals();
-    chartTotals();
-    buildTables();
+    // await calculateTotals();
+    // chartTotals();
+    // buildTables();
+    // fetchInitialData().then(() => {
+    //     console.log("finished fetching initial data");
+    //     buildInitialLineGraph();
+    // });
 }
-
+console.log("Fetch from visuals.js");
+fetchInitialData().then(() => {
+    console.log("finished fetching initial data");
+    //buildInitialLineGraph();
+});
 setup();
