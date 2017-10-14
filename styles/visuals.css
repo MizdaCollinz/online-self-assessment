@@ -52,21 +52,15 @@ tr td {
 
 @media only screen and (max-width : 720px) {
     .charts, .tables {
-        display: block;
         margin: auto;
     }
-    table {
-        margin: auto;
+    .tables {
+        margin-top: 50px;
+        width: unset;
     }
-
-    .pies{
+    
+    .pies {
         display: unset;
     }
-}
 
-@media only screen and (min-width : 721px){
-    .charts, .tables {
-        display: inline-block;
-        
-    }
 }
