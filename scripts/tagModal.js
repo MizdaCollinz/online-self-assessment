@@ -67,8 +67,12 @@ async function buildSiteTable(tbody){
             let dropdown = createDropdown();
             
             let button = document.createElement('button');
-            button.className = "modal-button";
-            button.innerText = "Add Tag";
+            button.classList.add("modal-button");
+            button.classList.add("btn");
+            button.classList.add("grey");
+            button.classList.add("darken-3");
+            button.setAttribute("type","submit");
+            button.innerText = "Tag";
             button.onclick = async function(){
                 let tr = this.closest('tr');
                 let td = tr.getElementsByTagName('td')[0]; //Website name is in first column
@@ -77,7 +81,10 @@ async function buildSiteTable(tbody){
                 let parent = this.parentElement;
                 let dropdown = parent.getElementsByTagName('select')[0];
                 let tag = $(dropdown).val();
-                
+                if(tag == null || tag == undefined){
+                    return;
+                }
+
                 let result = await addNewTag(website, tag);
                 if ( result == true) {
                     let tick = document.createTextNode("\u2714");

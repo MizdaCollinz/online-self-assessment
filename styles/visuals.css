@@ -2,6 +2,12 @@
     font-weight: 500;
 }
 
+/* Nav Bar */
+
+nav ul a:hover {
+    background-color: rgba(0,0,0,0.5);
+}
+
 /* Collapsible units containing graphs */
 ul.collapsible {
     width:90%;
@@ -77,13 +83,18 @@ thead {
 .modal table {
     margin: auto;
     width: 75%;
+    font-size: 1.1em;
+}
+
+.modal th {
+    background-color: #424242;
 }
 
 .modal select {
     width:100px;
     height:30px;
-    font-size: 0.5em;
     display:unset;
+    font-size: 0.9em;
 }
 
 .modal h4 {
@@ -101,9 +112,12 @@ thead {
 }
 
 .modal-button {
-    color: black;
-    padding: 2px;
     margin: 5px;
+    font-size: 0.9em;
+}
+
+.modal-footer {
+    font-weight: bold;
 }
 
 footer {
