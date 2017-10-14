@@ -20,6 +20,9 @@
             <ul class="right hide-on-med-and-down">
                 <!-- Do we have a button to put here? -->
                 <li>
+                    <a class="modal-trigger" href="#modal1">Tag Sites</a>
+                </li>
+                <li>
                     <a href="">Settings</a>
                 </li>
             </ul>
@@ -37,8 +40,6 @@
             <h2 id="main-head" class="header center red-text text-darken-4">User Statistics</h1>
         </div>
     </div>
-
-
 
     <ul class="collapsible" data-collapsible="accordion">
         <li>
@@ -104,11 +105,29 @@
         </li>
     </ul>
 
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal modal-fixed-footer">
+        <div class="modal-content red darken-4">
+            <h4 class="header white-text text-darken-4" >Untagged Websites</h4>
+            <table id="siteTable">
+                <thead>
+                    <th>Website</th>
+                    <th>Actions</th>
+                </thead>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Done</a>
+        </div>
+    </div>
+
     <footer class="page-footer red darken-2">
         <div class="footer-copyright">
             <div class="container">
                 Made by
-                <a class="red-text text-lighten-3" href="http://materializecss.com">Us</a>
+                <a class="red-text text-lighten-3" href="https://github.com/MizdaCollinz/online-self-assessment">
+                    Benjamin Collins, Jayden Cooke, Henry Wu and William Lin
+                </a>
             </div>
         </div>
     </footer>
@@ -119,7 +138,7 @@
     <script src="../scripts/Chart.min.js"></script>
     <script src="../scripts/chartScript.js"></script>
     <script src="../scripts/visuals.js"></script>
+    <script src="../scripts/tagModal.js"></script>
 </body>
-
 
 </HTML>

@@ -19,18 +19,20 @@ ul.collapsible {
 
 tr th {
     color: whitesmoke;
-    background-color: rgba(26, 35, 126,0.9);
+    background-color: #e53935; 
     padding-left: 15px;
-    border-radius: 0px;
+    border-radius: 50px;
     text-align: center;
 }
 
 tr td {
     padding:15px;
-    color:whitesmoke;
-    background-color: rgba(63, 81, 181, 0.8);
     border-radius: 0px;
     text-align: center;
+}
+
+thead {
+    border-bottom: none;
 }
 
 .charts, .tables {
@@ -63,4 +65,49 @@ tr td {
         display: unset;
     }
 
+}
+
+/* Modal Styling */
+
+.modal-content{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.modal table {
+    margin: auto;
+    width: 75%;
+}
+
+.modal select {
+    width:100px;
+    height:30px;
+    font-size: 0.5em;
+    display:unset;
+}
+
+.modal h4 {
+    font-weight: bold;
+}
+
+.modal td {
+    padding: 0px;
+    padding-top: 5px;
+    background-color: white;
+}
+
+.modal th {
+    border-radius: 0px;
+}
+
+.modal-button {
+    color: black;
+    padding: 2px;
+    margin: 5px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width:100%;
 }
