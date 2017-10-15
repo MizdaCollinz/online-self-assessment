@@ -1,6 +1,6 @@
 let visitDurations = []; // Entries are [websitename,totalvisits]
 let tagDurations = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
-
+let sites = 6; //Number of unique sites shown in total site visits 
 
 //Return duration between two dates
 function getTime(startTime, endTime) {
@@ -21,6 +21,37 @@ function getVisitDuration(visit) {
         return 0; //Don't return invalid values
     }
     return duration;
+}
+
+// Return single day visit duration in seconds
+function getSingleDayVisitDuration(visit, day) {
+    let compareDay = new Date(day);
+    compareDay.setHours(0,0,0,0);
+
+    let startDay = new Date(visit.time.start);
+    let tempStartDay = new Date(visit.time.start);
+    tempStartDay.setHours(0,0,0,0);
+
+    let endDay = new Date(visit.time.end);
+    let tempEndDay = new Date(visit.time.end);
+    tempEndDay.setHours(0,0,0,0);
+
+    // TODO: Need to take into account overlapping days
+    if (tempEndDay < compareDay) {
+        return 0;
+    } else if (tempStartDay > compareDay) {
+        return 0;
+    } else {
+        let duration = getTime(startDay, endDay);
+        
+        //Case often occurs when the end time is undefined (Tab is still open, the visit is ongoing)
+        if (duration < 0) {
+            return 0; //Don't return invalid values
+        }
+        return duration;
+    }
+
+
 }
 
 //Return promise to retrieve information about a website
@@ -52,6 +83,23 @@ async function getTotalVisits(website) {
     });
 
     return total;
+}
+
+// Return the total visit duration of a single day
+async function getSingleDayVisits(website, day) {
+
+    let singleDayTotal = await getWebsite(website).then(function (resolved) {
+        let visits = resolved.visits;
+        let duration = 0;
+
+        visits.forEach(function (element) {
+            duration += getSingleDayVisitDuration(element, day);
+        }, this);
+
+        return duration;
+    });
+
+    return singleDayTotal;
 }
 
 //Retrieve list of websites (keys in local storage)
@@ -106,9 +154,8 @@ async function calculateTotals() {
 //Produce a chart of visit totals
 function chartTotals() {
 
-    //Retrieve top 6 most visited sites from history
-    let sites = 6;
-    if (visitDurations.length < 6) {
+    //Retrieve top 5 most visited sites from history
+    if (visitDurations.length < 5) {
         sites = visitDurations.length;
     }
 
@@ -116,9 +163,17 @@ function chartTotals() {
     let values = [];
 
     for (let i = 0; i < sites; i++) {
-        labels.push(visitDurations[i][0]);
+        labels.push(cutName(visitDurations[i][0]));
         values.push(visitDurations[i][1]);
+    } 
+
+    //Calculate the total for all other sites
+    let total = 0;
+    for (i=sites; i< visitDurations.length; i++) {
+        total += visitDurations[i][1];
     }
+    labels.push("Other");
+    values.push(total);
 
     //Retrieve tag data
     let tagset = Object.keys(tagDurations);
@@ -128,17 +183,16 @@ function chartTotals() {
     }
 
     let totalContext = document.getElementById("totalChart").getContext('2d');
-    let myChart = buildChart(totalContext, 'doughnut', labels, values);
+    let myChart = buildPieChart(totalContext, labels, values);
 
     let tagContext = document.getElementById("tagChart").getContext('2d');
-    let tagChart = buildChart(tagContext, 'doughnut', tagset, tagvalues);
+    let tagChart = buildPieChart(tagContext, tagset, tagvalues);
 
 }
 
 
 //Produce a table of the visit totals
 function buildTables() {
-
     let totalTable = document.getElementById("totalTable");
     let total = 0;
     for (let site of visitDurations){
@@ -146,8 +200,8 @@ function buildTables() {
     }
 
     let includedPercentage = 0;
-    for (let i=0; i<8; i++) {
-        let name = visitDurations[i][0];
+    for (let i=0; i<sites; i++) {
+        let name = cutName(visitDurations[i][0]);
         let value = visitDurations[i][1];
         let percentage = value * 100 / total;
         includedPercentage += percentage; //Build total of covered durations, to determine what is leftover
@@ -173,6 +227,57 @@ function buildTables() {
     }
 }
 
+// Produce line grpah of visited websites
+function buildLineGraphs() {
+    
+    // Retrieve top 6 most visited sites from history
+    let sites = 6;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+
+    let xLabels = [];
+    let datasetLabels = [];
+    let datasetValues = [];
+
+    // Generate x axis labels
+    let dateSpan = 10;
+    for (let i = 0; i < dateSpan; i++) {
+        let curDate = new Date();
+        curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
+        //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+        
+        xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+    }
+
+
+    // Iterates through top 6 sites
+    for (i = 0; i < sites; i++) {
+        // Adds each line for each website
+        let tempWebsiteVar = visitDurations[i][0];
+        datasetLabels.push(cutName(tempWebsiteVar));
+
+        
+        
+        // Iterates through specified dateSpan of history
+        let websiteValues = [];
+        for (let j = 0; j < dateSpan; j++) {
+            curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
+
+            getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
+                websiteValues.push(resolve);
+            });
+            
+        }
+        datasetValues.push(websiteValues);
+    }
+
+    let lineContext = document.getElementById("lineGraph").getContext('2d');
+    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, dateSpan);
+}
+
+
 //Convert seconds to formatted hour/min/sec
 function fromSeconds(seconds){
     let m = moment.duration(seconds,'seconds');
@@ -180,15 +285,19 @@ function fromSeconds(seconds){
     return `${values[0]}h ${values[1]}m ${values[2]}s `;
 }
 
+//Build a table row HTML element
 function buildRow(name, value) {
 
     let row = document.createElement('tr');
 
     let nameCell = document.createElement('td');
+    nameCell.style.minWidth = "180px";
+    nameCell.style.fontWeight = "500";
     let nameNode = document.createTextNode(name);
     nameCell.appendChild(nameNode);
 
     let perCell = document.createElement('td');
+    perCell.style.minWidth = "100px";
     let perNode = document.createTextNode(value);
     perCell.appendChild(perNode);
 
@@ -199,11 +308,22 @@ function buildRow(name, value) {
 }
 
 
+//Remove www from url names
+function cutName(website){
+    let url = website;
+    if (url.startsWith("www.")){
+        url = url.replace('www.','');
+    }
+    return url;
+}
+
+
 async function setup() {
     //Let the async functions populate data before proceeding
     await calculateTotals();
     chartTotals();
     buildTables();
+    buildLineGraphs();
 }
 
 setup();
