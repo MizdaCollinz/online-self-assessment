@@ -1,22 +1,22 @@
+// Return the history items associated with a given domain.
 function historyItemsFromDomain(domainName){
-    // Return the history items associated with a given domain.
     let historyItems = [];
     return new Promise((resolve, reject) => {
         // 10000 should get a decent portion of the user's history without lagging.
         chrome.history.search({text:"", maxResults:10000}, function(results){
-            for (i=0; i<results.length; i++){
+            results.forEach(function(historyItem){
                 // If the URL contains the domain name, add it to the list
-                if (results[i].url.indexOf(domainName)!==-1){
-                    historyItems.push(results[i]);
+                if (historyItem.url.indexOf(domainName)!==-1){
+                    historyItems.push(historyItem);
                 }
-            }
+            });       
             resolve(historyItems);
         });
     });
 }
 
+// Return the sum of the visits to any website in a domain
 async function visitCountToDomain(domainName){
-    // Return the sum of the visits to any website in a domain
     let results = await historyItemsFromDomain(domainName);
     visitCount = 0;
     results.forEach(function(element) {
@@ -25,8 +25,8 @@ async function visitCountToDomain(domainName){
     return visitCount;
 } 
 
+// Return the number of times a user typed in a url in a domain.
 async function typedCountToDomain(domainName){
-    // Return the number of times a user typed in a url in a domain.
     let results = await historyItemsFromDomain(domainName);
     typedCount = 0;
     results.forEach(function(element) {
@@ -35,17 +35,18 @@ async function typedCountToDomain(domainName){
     return typedCount;
 }
 
+// Return the number of times a user was linked to a page in this domain.
 async function linkedCountToDomain(domainName){
-    // Return the number of times a user was linked to a page in this domain.
     let visitCount = await visitCountToDomain(domainName);
     let typedCount = await typedCountToDomain(domainName);
     let linkedCount = visitCount - typedCount;
     return linkedCount;
 }
 
+// Return a breakdown of the transitions of a domain's history items.
 async function getTransitionsInDomain(domainName){
-    // Return a breakdown of the transitions of a domain's history items.
-    let historyItems = await historyItemsFromDomain(domainName);
+    
+    // Data will be returned in this format.
     let transitionBreakdown = {
         "link":0, 
         "typed":0, 
@@ -59,12 +60,16 @@ async function getTransitionsInDomain(domainName){
         "keyword":0,
         "keyword_generated":0
     }
+
+    let historyItems = await historyItemsFromDomain(domainName);
+
+    // Iterate through each visit of each history item, and increment the transitions as appropriate.
     return new Promise((resolve, reject) => {
         historyItems.forEach(function(historyItem){
             let urlWrapper = {url:historyItem.url};  
             chrome.history.getVisits(urlWrapper, function(results){
-                results.forEach(function(element){
-                    transitionBreakdown[element.transition]++;
+                results.forEach(function(visitItem){
+                    transitionBreakdown[visitItem.transition]++;
                 });
             });
         });
@@ -78,7 +83,8 @@ async function test(){
     results = await visitCountToDomain("canvas.auckland.ac.nz");
     results = await typedCountToDomain("canvas.auckland.ac.nz");
     results = await linkedCountToDomain("canvas.auckland.ac.nz");
-    results = await getTransitionsInDomain("canvas.auckland.ac.nz");
+    results = await getTransitionsInDomain("reddit.com");
+    console.log(results);
 }
 test();
 
