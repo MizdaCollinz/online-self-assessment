@@ -28,6 +28,13 @@ async function visitCountToDomain(domainName){
 
 async function typedCountToDomain(domainName){
     // Return the number of times a user typed in a url in a domain.
+    let results = await historyItemsFromDomain(domainName);
+    typedCount = 0;
+    results.forEach(function(element) {
+        console.log(element);
+        typedCount += element.typedCount;
+    }, this);
+    return typedCount;
 }
 
 async function linkedCountToDomain(domainName){
@@ -40,7 +47,7 @@ async function getTransitionsInDomain(domainName){
 
 //Test code
 async function test(){
-    let results = await visitCountToDomain("facebook.com");
+    let results = await typedCountToDomain("facebook.com");
     console.log(results);
 }
 test();
