@@ -39,6 +39,12 @@ async function typedCountToDomain(domainName){
 
 async function linkedCountToDomain(domainName){
     // Return the number of times a user was linked to a page in this domain.
+    let visitCount = await visitCountToDomain(domainName);
+    console.log(visitCount);
+    let typedCount = await typedCountToDomain(domainName);
+    console.log(typedCount);
+    let linkedCount = visitCount - typedCount;
+    return linkedCount;
 }
 
 async function getTransitionsInDomain(domainName){
@@ -47,7 +53,7 @@ async function getTransitionsInDomain(domainName){
 
 //Test code
 async function test(){
-    let results = await typedCountToDomain("facebook.com");
+    let results = await linkedCountToDomain("facebook.com");
     console.log(results);
 }
 test();
