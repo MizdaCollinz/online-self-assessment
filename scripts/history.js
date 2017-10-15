@@ -1,5 +1,19 @@
-function historyItemsFromDomain(domainName){
+async function historyItemsFromDomain(domainName){
     // Return the history items associated with a given domain.
+    let historyItems = [];
+    return new Promise((resolve, reject) => {
+        // 10000 should get a decent portion of the user's history without lagging.
+        chrome.history.search({text:"", maxResults:10000}, function(results){
+            for (i=0; i<results.length; i++){
+                // If the URL contains the domain name, add it to the list
+                console.log(results[i]);
+                if (results[i].url.indexOf(domainName)!==-1){
+                    historyItems.push(results[i]);
+                }
+            }
+            resolve(historyItems);
+        });
+    });
 }
 
 function visitCountToDomain(domainName){
@@ -17,9 +31,6 @@ function linkedCountToDomain(domainName){
 function getTransitionsInDomain(domainName){
     // Return a breakdown of the transitions of a domain's history items.
 }
-
-
-
 
 
 
