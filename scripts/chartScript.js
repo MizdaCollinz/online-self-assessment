@@ -7,7 +7,7 @@ const colours = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255
 const borderColours = ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)',
 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
 'rgba(198, 40, 40, 1)', 'rgba(26, 35, 126, 1)', 'rgba(0, 96, 100, 1)' ];
-
+var lineChart = null;
 
 // Build a chart with the provided discrete label set and data values
 function buildChart(context, chartType, chartLabels, chartData, extras) {
@@ -73,8 +73,11 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
             lineTension: 0.1
         })
     }
-
-    return new Chart(context, {
+    if (lineChart != null) {
+        lineChart.destroy();
+    }
+    
+    lineChart = new Chart(context, {
         type: 'line',
         data: {
             labels: xLabels,
@@ -82,6 +85,8 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
         },
         options: {}
     });
+
+    return lineChart;
 }
 
 

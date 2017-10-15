@@ -133,8 +133,8 @@ async function drawLineGraph(time) {
 
     console.log("datalabels: " + datasetLabels);
     console.log("datavalues: " + datasetValues);
-    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
     
+    lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
 }
 
 // Generates xLabels for line graph depending on how long and what scale it is measured in
