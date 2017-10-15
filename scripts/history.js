@@ -6,7 +6,6 @@ async function historyItemsFromDomain(domainName){
         chrome.history.search({text:"", maxResults:10000}, function(results){
             for (i=0; i<results.length; i++){
                 // If the URL contains the domain name, add it to the list
-                console.log(results[i]);
                 if (results[i].url.indexOf(domainName)!==-1){
                     historyItems.push(results[i]);
                 }
@@ -18,7 +17,13 @@ async function historyItemsFromDomain(domainName){
 
 async function visitCountToDomain(domainName){
     // Return the sum of the visits to any website in a domain
-
+    let results = await historyItemsFromDomain(domainName);
+    visitCount = 0;
+    results.forEach(function(element) {
+        console.log(element);
+        visitCount += element.visitCount;
+    }, this);
+    return visitCount;
 } 
 
 async function typedCountToDomain(domainName){
@@ -32,6 +37,13 @@ async function linkedCountToDomain(domainName){
 async function getTransitionsInDomain(domainName){
     // Return a breakdown of the transitions of a domain's history items.
 }
+
+//Test code
+async function test(){
+    let results = await visitCountToDomain("facebook.com");
+    console.log(results);
+}
+test();
 
 
 
