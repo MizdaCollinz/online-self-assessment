@@ -12,6 +12,14 @@
         "persistent": false
     },
 
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["./scripts/tagDisc.js"],
+            "run_at": "document_end"
+        }
+    ],
+
     //Browser Action - Create a menu?
      "browser_action" : {
          "default_title": "Online Assessment",
@@ -24,5 +32,7 @@
         "storage",
         "http://*/*",
         "https://*/*"
-    ]
+    ],
+
+    "web_accessible_resources": ["pages/featureDisc.html"]
 }
