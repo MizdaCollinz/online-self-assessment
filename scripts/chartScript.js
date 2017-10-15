@@ -109,4 +109,6 @@ function cutName(website){
         url = url.replace('www.','');
     }
     console.log(url);
+    
+    return url;
 }
