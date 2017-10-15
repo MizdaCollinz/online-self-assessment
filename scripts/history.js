@@ -16,19 +16,20 @@ async function historyItemsFromDomain(domainName){
     });
 }
 
-function visitCountToDomain(domainName){
+async function visitCountToDomain(domainName){
     // Return the sum of the visits to any website in a domain
+
 } 
 
-function typedCountToDomain(domainName){
+async function typedCountToDomain(domainName){
     // Return the number of times a user typed in a url in a domain.
 }
 
-function linkedCountToDomain(domainName){
+async function linkedCountToDomain(domainName){
     // Return the number of times a user was linked to a page in this domain.
 }
 
-function getTransitionsInDomain(domainName){
+async function getTransitionsInDomain(domainName){
     // Return a breakdown of the transitions of a domain's history items.
 }
 
