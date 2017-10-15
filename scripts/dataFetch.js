@@ -1,19 +1,18 @@
-let visitDurations = []; // Entries are [websitename,totalvisits]
-let tagDurations = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
+var visitDurations = []; // Entries are [websitename,totalvisits]
+var tagDurations = {}; // Object with Tag names as keys, total visit duration as values e.g Social Network 
+var sites = 6;
 
 // Line graph data storage
 // 14 days data
-let lineData14days = [];
-let xLabel14days = [];
-let lineLabels14days =[];
-let lineValues14days = [];
+var lineData14days = [];
+var xLabel14days = [];
+var lineLabels14days =[];
+var lineValues14days = [];
 // 12 weeks data
-let lineData12weeks = [];
-let xLabel12weeks = [];
-let lineLabels12weeks =[];
-let lineValues12weeks = [];
-
-// Calculates total
+var lineData12weeks = [];
+var xLabel12weeks = [];
+var lineLabels12weeks =[];
+var lineValues12weeks = [];
 
 
 // Bundles dataset
@@ -31,7 +30,6 @@ function bundleLineData(dateSpan) {
 
 // Calculates 14 days
 async function prefetchDays() {
-    let sites = 6;
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
     }
@@ -44,7 +42,6 @@ async function prefetchDays() {
 
 // Calculates 12 weeks
 async function prefetchWeeks() {
-    let sites = 6;
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
     }
@@ -75,6 +72,24 @@ function getVisitDuration(visit) {
     }
     return duration;
 }
+
+// Return the total visit duration of a single day
+async function getSingleDayVisits(website, day) {
+    
+        let singleDayTotal = await getWebsite(website).then(function (resolved) {
+            let visits = resolved.visits;
+            let duration = 0;
+    
+            visits.forEach(function (element) {
+                //console.log(day);
+                duration += getSingleDayVisitDuration(element, day);
+            }, this);
+    
+            return duration;
+        });
+    
+        return singleDayTotal;
+    }
 
 // Return single day visit duration in seconds
 function getSingleDayVisitDuration(visit, day) {
@@ -213,7 +228,6 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
     for (i = 0; i < sites; i++) {
         // Adds each line for each website
         let tempWebsiteVar = visitDurations[i][0];
-        console.log(tempWebsiteVar);
         datasetLabels.push(tempWebsiteVar);
 
         // Iterates through specified dateSpan of history
@@ -221,14 +235,12 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
         for (let j = 0; j < dateSpan; j++) {
             curDate = new Date();
             curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
-            //console.log(curDate.getDate());
 
             await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
                 websiteValues.push(resolve);
             });
             
         }
-        console.log(websiteValues);
         datasetValues.push(websiteValues);
     }
 }
@@ -241,39 +253,16 @@ function getLineBundle(dateSpan) {
     }
 }
 
-async function buildInitialLineGraph() {
+function buildInitialLineGraph() {
     let lineContext = document.getElementById("lineGraph").getContext('2d');
     let lineChart = buildSingleLineGraph(lineContext, lineData14days[0], lineData14days[1], lineData14days[2], 1);
-    
 }
 
 async function fetchInitialData() {
-    let calculateTotalPromise = new Promise((resolve, reject) => {
-        calculateTotals();
-        resolve();
-    });
-
-    let prefetchDaysPromise = new Promise((resolve, reject) => {
-        prefetchDays();
-        resolve();
-    })
-
-    calculateTotalPromise.then(() => {
-        console.log(visitDurations);
-    });
-    //await calculateTotals();
-    //await prefetchDays();
+    await calculateTotals();
+    await prefetchDays();
     await prefetchWeeks();
-    await bundleLineData('14');
-    await bundleLineData('12');
-    console.log("Data: " + lineData14days);
-    console.log("Data: " + lineData12weeks);
-    console.log(visitDurations);
-    
-}
+    bundleLineData('14');
+    bundleLineData('12');
 
-// console.log("dataFecth");
-// fetchInitialData().then(() => {
-//     console.log("finished fetching initial data");
-//     //buildInitialLineGraph();
-// });
+}
