@@ -95,12 +95,19 @@
         <li>
             <div class="collapsible-header red">Line Graphs</div>
             <div class="collapsible-body container">
-                <div class="section">
+                <div class="section" align="center">
                     <div class="row">
-
-                        <div>
+                        <div class="charts">
                             <h5 class="center condensed-light">Line graph of visits</h5>
-                            <canvas id="lineGraph" width="500" height="250"></canvas>
+                            <div class="center">
+                                <a id="lineGraphDropdownBtn" class="dropdown-button btn" href="#" data-activates="lineGraphDropdown">14 days</a>
+                            </div>
+                            <ul id="lineGraphDropdown" class="dropdown-content">
+                                <li><a href="#!" id="14days">14 days</a></li>
+                                <li><a href="#!" id="12weeks">12 weeks</a></li>
+                                <li><a href="#!" id="24weeks">24 weeks</a></li>
+                            </ul>
+                            <canvas id="lineGraph" width="1280" height="720"></canvas>
                         </div>
                     </div>
                 </div>

@@ -227,57 +227,6 @@ function buildTables() {
     }
 }
 
-// Produce line grpah of visited websites
-function buildLineGraphs() {
-    
-    // Retrieve top 6 most visited sites from history
-    let sites = 6;
-    if (visitDurations.length < 6) {
-        sites = visitDurations.length;
-    }
-
-    let xLabels = [];
-    let datasetLabels = [];
-    let datasetValues = [];
-
-    // Generate x axis labels
-    let dateSpan = 10;
-    for (let i = 0; i < dateSpan; i++) {
-        let curDate = new Date();
-        curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
-        //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-        
-        xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-    }
-
-
-    // Iterates through top 6 sites
-    for (i = 0; i < sites; i++) {
-        // Adds each line for each website
-        let tempWebsiteVar = visitDurations[i][0];
-        datasetLabels.push(cutName(tempWebsiteVar));
-
-        
-        
-        // Iterates through specified dateSpan of history
-        let websiteValues = [];
-        for (let j = 0; j < dateSpan; j++) {
-            curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
-
-            getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                websiteValues.push(resolve);
-            });
-            
-        }
-        datasetValues.push(websiteValues);
-    }
-
-    let lineContext = document.getElementById("lineGraph").getContext('2d');
-    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, dateSpan);
-}
-
-
 //Convert seconds to formatted hour/min/sec
 function fromSeconds(seconds){
     let m = moment.duration(seconds,'seconds');
@@ -307,6 +256,102 @@ function buildRow(name, value) {
     return row;
 }
 
+// Redraws the line graph depending on dropdown input
+async function drawLineGraph(time) {
+    console.log("time to redraw:" + time);
+    let lineContext = document.getElementById("lineGraph").getContext('2d');
+    
+    // Retrieve top 6 most visited sites from history
+    let sites = 6;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+    
+    let xLabels = [];
+    let tempDataset = [];
+    let datasetLabels = [];
+    let datasetValues = [];
+    
+    
+    // If time selected is 14 days or 12 weeks
+    if (time === '14') {
+        xLabels = generatexLabels(14);
+        await generateDatasets(sites, 14, datasetLabels, datasetValues);
+    } else if (time === '12') {
+        // date span specifed is 12 weeks
+        xLabels = generatexLabels(12);
+        await generateDatasets(sites, 12, datasetLabels, datasetValues);
+    }
+    console.log("datalabels: " + datasetLabels);
+    console.log("datavalues: " + datasetValues);
+    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
+    
+}
+
+// JQuery for dynamically updating line graph from dropdown selection
+$('#14days').click(function() {
+    $('#lineGraphDropdownBtn').text("14 days");
+    $('#lineGraphDropdownBtn').dropdown('close');
+    drawLineGraph('14');
+    return false;
+});
+
+$('#12weeks').click(function() {
+    $('#lineGraphDropdownBtn').text("12 weeks");    
+    $('#lineGraphDropdownBtn').dropdown('close');
+    drawLineGraph('12');
+    return false;
+});
+
+// Generates xLabels for line graph depending on how long and what scale it is measured in
+function generatexLabels(dateSpan) {
+    let xLabels = [];
+    if (dateSpan === 14) {
+        for (let i = 0; i < dateSpan; i++) {
+            let curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
+            //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+            
+            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+        }
+    } else if (dateSpan === 12) {
+        for (let i = 0; i < dateSpan; i++) {
+            let curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + i*7);
+            console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+            
+            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+        }
+    }
+
+    return xLabels;
+}
+
+// Generates datasets for line graph plot
+async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
+// Iterates through top 6 sites
+    for (i = 0; i < sites; i++) {
+        // Adds each line for each website
+        let tempWebsiteVar = visitDurations[i][0];
+        console.log(tempWebsiteVar);
+        datasetLabels.push(tempWebsiteVar);
+
+        // Iterates through specified dateSpan of history
+        let websiteValues = [];
+        for (let j = 0; j < dateSpan; j++) {
+            curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
+            //console.log(curDate.getDate());
+
+            await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
+                websiteValues.push(resolve);
+            });
+            
+        }
+        console.log(websiteValues);
+        datasetValues.push(websiteValues);
+    }
+}
 
 //Remove www from url names
 function cutName(website){
@@ -323,7 +368,7 @@ async function setup() {
     await calculateTotals();
     chartTotals();
     buildTables();
-    buildLineGraphs();
+    drawLineGraph('14');
 }
 
 setup();
