@@ -181,8 +181,10 @@ async function setup() {
         //Build charts and tables
         chartTotals();
         buildTables();
+    });
+    
+    await fetchLineGraphData().then(() => {
         drawLineGraph('14');
-        
     });
 }
 

@@ -201,19 +201,51 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
         let tempWebsiteVar = visitDurations[i][0];
         datasetLabels.push(cutName(tempWebsiteVar));
 
-        // Iterates through specified dateSpan of history
+        // Iterates through specified dateSpan of history depending on if 14 days or 12 weeks
         let websiteValues = [];
-        for (let j = 0; j < dateSpan; j++) {
-            curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
+        if (dateSpan === 14) {
+            for (let j = 0; j < dateSpan; j++) {
+                curDate = new Date();
+                curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
+                await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
+                    websiteValues.push(resolve);
+                });
+            }
 
-            await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                websiteValues.push(resolve);
-            });
-            
+            datasetValues.push(websiteValues);
+
+        } else if (dateSpan === 12) {
+            for (let j = 0; j < dateSpan*7; j++) {
+                curDate = new Date();
+                curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + j);
+                //console.log(curDate);
+                await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
+                    websiteValues.push(resolve);
+                });
+            }
+
+            finalWebsiteValues = convertDurationDaysToWeeks(websiteValues);
+            console.log(finalWebsiteValues);
+            datasetValues.push(finalWebsiteValues);
         }
-        datasetValues.push(websiteValues);
     }
+}
+
+function convertDurationDaysToWeeks(inputDays) {
+    let resultValues = [];
+    let totalDays = inputDays.length;
+    let counter = 0;
+    while (counter < totalDays) {
+        let i = 0;
+        let sum = 0;
+        for (i; i < 7; i++) {
+            sum = sum + inputDays[counter];
+            counter++;
+        }
+        resultValues.push(sum);
+    }
+
+    return resultValues;
 }
 
 function getLineBundle(dateSpan) {
@@ -226,9 +258,11 @@ function getLineBundle(dateSpan) {
 
 async function fetchInitialData() {
     await calculateTotals();
+}
+
+async function fetchLineGraphData() {
     await prefetchDays();
     await prefetchWeeks();
     bundleLineData('14');
     bundleLineData('12');
-
 }
