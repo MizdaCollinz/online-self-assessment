@@ -1,4 +1,4 @@
-async function historyItemsFromDomain(domainName){
+function historyItemsFromDomain(domainName){
     // Return the history items associated with a given domain.
     let historyItems = [];
     return new Promise((resolve, reject) => {
