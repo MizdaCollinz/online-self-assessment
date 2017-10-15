@@ -20,7 +20,6 @@ async function visitCountToDomain(domainName){
     let results = await historyItemsFromDomain(domainName);
     visitCount = 0;
     results.forEach(function(element) {
-        console.log(element);
         visitCount += element.visitCount;
     }, this);
     return visitCount;
@@ -31,7 +30,6 @@ async function typedCountToDomain(domainName){
     let results = await historyItemsFromDomain(domainName);
     typedCount = 0;
     results.forEach(function(element) {
-        console.log(element);
         typedCount += element.typedCount;
     }, this);
     return typedCount;
@@ -40,21 +38,47 @@ async function typedCountToDomain(domainName){
 async function linkedCountToDomain(domainName){
     // Return the number of times a user was linked to a page in this domain.
     let visitCount = await visitCountToDomain(domainName);
-    console.log(visitCount);
     let typedCount = await typedCountToDomain(domainName);
-    console.log(typedCount);
     let linkedCount = visitCount - typedCount;
     return linkedCount;
 }
 
 async function getTransitionsInDomain(domainName){
     // Return a breakdown of the transitions of a domain's history items.
+    let historyItems = await historyItemsFromDomain(domainName);
+    let transitionBreakdown = {
+        "link":0, 
+        "typed":0, 
+        "auto_bookmark":0,
+        "auto_subframe":0, 
+        "manual_subframe":0, 
+        "generated":0, 
+        "auto_toplevel":0, 
+        "form_submit":0, 
+        "reload":0, 
+        "keyword":0,
+        "keyword_generated":0
+    }
+    return new Promise((resolve, reject) => {
+        historyItems.forEach(function(historyItem){
+            let urlWrapper = {url:historyItem.url};  
+            chrome.history.getVisits(urlWrapper, function(results){
+                results.forEach(function(element){
+                    transitionBreakdown[element.transition]++;
+                });
+            });
+        });
+        resolve(transitionBreakdown);
+    });
 }
 
 //Test code
 async function test(){
-    let results = await linkedCountToDomain("facebook.com");
-    console.log(results);
+    let results = await historyItemsFromDomain("canvas.auckland.ac.nz");
+    results = await visitCountToDomain("canvas.auckland.ac.nz");
+    results = await typedCountToDomain("canvas.auckland.ac.nz");
+    results = await linkedCountToDomain("canvas.auckland.ac.nz");
+    results = await getTransitionsInDomain("canvas.auckland.ac.nz");
 }
 test();
 
