@@ -10,9 +10,17 @@ function chartTotals() {
     let values = [];
 
     for (let i = 0; i < sites; i++) {
-        labels.push(visitDurations[i][0]);
+        labels.push(cutName(visitDurations[i][0]));
         values.push(visitDurations[i][1]);
+    } 
+
+    //Calculate the total for all other sites
+    let total = 0;
+    for (i=sites; i< visitDurations.length; i++) {
+        total += visitDurations[i][1];
     }
+    labels.push("Other");
+    values.push(total);
 
     //Retrieve tag data
     let tagset = Object.keys(tagDurations);
@@ -22,17 +30,16 @@ function chartTotals() {
     }
 
     let totalContext = document.getElementById("totalChart").getContext('2d');
-    let myChart = buildChart(totalContext, 'doughnut', labels, values);
+    let myChart = buildPieChart(totalContext, labels, values);
 
     let tagContext = document.getElementById("tagChart").getContext('2d');
-    let tagChart = buildChart(tagContext, 'doughnut', tagset, tagvalues);
+    let tagChart = buildPieChart(tagContext, tagset, tagvalues);
 
 }
 
 
 //Produce a table of the visit totals
 function buildTables() {
-
     let totalTable = document.getElementById("totalTable");
     let total = 0;
     for (let site of visitDurations){
@@ -40,8 +47,8 @@ function buildTables() {
     }
 
     let includedPercentage = 0;
-    for (let i=0; i<8; i++) {
-        let name = visitDurations[i][0];
+    for (let i=0; i<sites; i++) {
+        let name = cutName(visitDurations[i][0]);
         let value = visitDurations[i][1];
         let percentage = value * 100 / total;
         includedPercentage += percentage; //Build total of covered durations, to determine what is leftover
@@ -74,15 +81,19 @@ function fromSeconds(seconds){
     return `${values[0]}h ${values[1]}m ${values[2]}s `;
 }
 
+//Build a table row HTML element
 function buildRow(name, value) {
 
     let row = document.createElement('tr');
 
     let nameCell = document.createElement('td');
+    nameCell.style.minWidth = "180px";
+    nameCell.style.fontWeight = "500";
     let nameNode = document.createTextNode(name);
     nameCell.appendChild(nameNode);
 
     let perCell = document.createElement('td');
+    perCell.style.minWidth = "100px";
     let perNode = document.createTextNode(value);
     perCell.appendChild(perNode);
 
@@ -96,9 +107,58 @@ function buildRow(name, value) {
 async function drawLineGraph(time) {
     console.log("time to redraw:" + time);
     let lineContext = document.getElementById("lineGraph").getContext('2d');
-    let lineBundle = getLineBundle(time);
-    let lineChart = buildSingleLineGraph(lineContext, lineBundle[0], lineBundle[1], lineBundle[2], 1);
     
+    // Retrieve top 6 most visited sites from history
+    let sites = 6;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+    
+    let xLabels = [];
+    let datasetLabels = [];
+    let datasetValues = [];
+    
+    
+    // If time selected is 14 days or 12 weeks
+    if (time === '14') {
+        xLabels = generatexLabels(14);
+        datasetLabels = lineData14days[0];
+        datasetValues = lineData14days[1];
+    } else if (time === '12') {
+        // date span specifed is 12 weeks
+        xLabels = generatexLabels(12);
+        datasetLabels = lineData12weeks[0];
+        datasetValues = lineData12weeks[1];
+    }
+
+    console.log("datalabels: " + datasetLabels);
+    console.log("datavalues: " + datasetValues);
+    let lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
+    
+}
+
+// Generates xLabels for line graph depending on how long and what scale it is measured in
+function generatexLabels(dateSpan) {
+    let xLabels = [];
+    if (dateSpan === 14) {
+        for (let i = 0; i < dateSpan; i++) {
+            let curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
+            //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+            
+            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+        }
+    } else if (dateSpan === 12) {
+        for (let i = 0; i < dateSpan; i++) {
+            let curDate = new Date();
+            curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + i*7);
+            //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+            
+            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+        }
+    }
+
+    return xLabels;
 }
 
 // JQuery for dynamically updating line graph from dropdown selection
@@ -121,8 +181,7 @@ async function setup() {
         //Build charts and tables
         chartTotals();
         buildTables();
-        buildInitialLineGraph();
-        
+        drawLineGraph('14');
         
     });
 }

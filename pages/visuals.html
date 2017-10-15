@@ -15,78 +15,87 @@
 
 <body>
     <nav class="red darken-4" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">OTSA</a>
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo">OTSA</a>
             <ul class="right hide-on-med-and-down">
-                <!-- Do we have a button to put here? -->
-                <li><a href="">Settings</a></li>
+                <li>
+                    <a class="modal-trigger center" href="#modal1">
+                        <i class="material-icons">local_offer</i>
+                        <span>Tag Sites</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="center" href="#">
+                        <i class="material-icons">settings</i>
+                        Settings
+                    </a>
+                </li>
             </ul>
 
             <ul id="nav-mobile" class="side-nav">
-                <li><a href="#">Settings</a></li>
+                <li>
+                    <a href="#">Settings</a>
+                </li>
             </ul>
         </div>
     </nav>
 
     <div class="section no-pad-bot" id="index-banner">
         <div class="container">
-            <h2 class="header center red-text text-darken-4">User Statistics</h1>
+            <h2 id="main-head" class="header center grey-text text-darken-4">User Statistics</h1>
         </div>
     </div>
 
-    
-
-    <ul class="collapsible" data-collapsible="expandable">
+    <ul class="collapsible" data-collapsible="accordion">
         <li>
-            <div class="collapsible-header active">Total Visit Time</div>
+            <div class="collapsible-header active red">Total Visit Time</div>
             <div class="collapsible-body container">
-                <div class="section">
-                    <div class="row">
-                        
-                        <div class="col l6 m6 s6">
-                            <table class="striped" id="totalTable">
-                                <thead>
-                                    <th>Website</th>
-                                    <th>Total Online Time</th>
-                                </thead>
-                            </table>
-                        </div>
-                        
-                        <div class="col l6 m6 s6 charts">
-                            <canvas id="totalChart" width="400" height="500"></canvas>
-                            <h5 class="center condensed-light">Most Visited Sites</h3>
-                        </div>
+                <div class="section pies">
 
-                    </div> <!-- close row -->
+                    <div class="charts">
+                        <canvas id="totalChart" class="center" width="400" height="350"></canvas>
+                        <h5 class="center condensed-light">Most Visited Sites</h3>
+                    </div>
 
-                </div> <!-- close section-->
+
+                    <div class="tables">
+                        <table id="totalTable">
+                            <thead>
+                                <th>Website</th>
+                                <th>Overall Time</th>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- close section-->
             </div>
         </li>
         <li>
-            <div class="collapsible-header">Most Visited Tags</div>
+            <div class="collapsible-header red white-text">Most Visited Tags</div>
             <div class="collapsible-body container">
-                <div class ="section">
-                    <div class="row">        
-                        <div class="col l6 m6 s6">
-                            <table class="striped" id="tagTable">
-                                <thead>
-                                    <th>Tag Name</th>
-                                    <th>Total Online Time</th>
-                                </thead>
-                            </table>
-                        </div>
-                            
-                        <div class="col l6 m6 s6 charts">
-                            <canvas id="tagChart" width="400" height="500"></canvas>
-                            <h5 class="center condensed-light">Most Visited Tags</h3>
-                        </div> 
-                    </div> <!-- close row -->
-                </div> <!-- close section -->
+                <div class="section pies">
+                    <div class="charts">
+                        <canvas id="tagChart" width="400" height="350"></canvas>
+                        <h5 class="center condensed-light">Most Visited Tags</h3>
+                    </div>
+
+                    <div class="tables">
+                        <table id="tagTable">
+                            <thead>
+                                <th>Tag Name</th>
+                                <th>Overall Time</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!-- close section -->
             </div>
         </li>
         <li>
-            <div class="collapsible-header">Line Graphs</div>
+            <div class="collapsible-header red">Line Graphs</div>
             <div class="collapsible-body container">
-                <div class="section">
+                <div class="section" align="center">
                     <div class="row">
                         <div class="charts">
                             <h5 class="center condensed-light">Line graph of visits</h5>
@@ -102,15 +111,38 @@
                         </div>
                     </div>
                 </div>
-                <br><br>
+                <br>
+                <br>
             </div>
         </li>
     </ul>
 
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal modal-fixed-footer">
+        <div class="modal-content grey darken-4">
+            <h4 class="header white-text text-darken-4">Untagged Websites</h4>
+            <table id="siteTable">
+                <thead>
+                    <th>Website</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Done</a>
+        </div>
+    </div>
+
     <footer class="page-footer red darken-2">
         <div class="footer-copyright">
             <div class="container">
-                Made by <a class="red-text text-lighten-3" href="http://materializecss.com">Us</a>
+                Made by
+                <a class="red-text text-lighten-3" href="https://github.com/MizdaCollinz/online-self-assessment">
+                    Benjamin Collins, Jayden Cooke, Henry Wu and William Lin
+                </a>
             </div>
         </div>
     </footer>
@@ -120,9 +152,8 @@
     <script src="../scripts/materialize.min.js"></script>
     <script src="../scripts/Chart.min.js"></script>
     <script src="../scripts/chartScript.js"></script>
-    <script src="../scripts/dataFetch.js"></script>
     <script src="../scripts/visuals.js"></script>
+    <script src="../scripts/tagModal.js"></script>
 </body>
-
 
 </HTML>

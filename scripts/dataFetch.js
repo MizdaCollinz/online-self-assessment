@@ -5,7 +5,6 @@ var sites = 6;
 // Line graph data storage
 // 14 days data
 var lineData14days = [];
-var xLabel14days = [];
 var lineLabels14days =[];
 var lineValues14days = [];
 // 12 weeks data
@@ -18,11 +17,9 @@ var lineValues12weeks = [];
 // Bundles dataset
 function bundleLineData(dateSpan) {
     if (dateSpan === '14') {
-        lineData14days.push(xLabel14days);
         lineData14days.push(lineLabels14days)
         lineData14days.push(lineValues14days)
     } else if (dateSpan === '12') {
-        lineData12weeks.push(xLabel12weeks);
         lineData12weeks.push(lineLabels12weeks)
         lineData12weeks.push(lineValues12weeks)
     }
@@ -33,7 +30,6 @@ async function prefetchDays() {
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
     }
-    xLabel14days = generatexLabels(14);
     console.log("prefetching days");
     await generateDatasets(sites, 14, lineLabels14days, lineValues14days);    
     console.log("finished prefetching days");
@@ -45,7 +41,6 @@ async function prefetchWeeks() {
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
     }
-    xLabel12weeks = generatexLabels(12);
     console.log("prefetching weeks");    
     await generateDatasets(sites, 12, lineLabels12weeks, lineValues12weeks);
     console.log("finished prefetching weeks");    
@@ -198,37 +193,13 @@ async function calculateTotals() {
     });
 }
 
-// Generates xLabels for line graph depending on how long and what scale it is measured in
-function generatexLabels(dateSpan) {
-    let xLabels = [];
-    if (dateSpan === 14) {
-        for (let i = 0; i < dateSpan; i++) {
-            let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
-            console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-            
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-        }
-    } else if (dateSpan === 12) {
-        for (let i = 0; i < dateSpan; i++) {
-            let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + i*7);
-            console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
-            
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
-        }
-    }
-
-    return xLabels;
-}
-
 // Generates datasets for line graph plot
 async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
 // Iterates through top 6 sites
     for (i = 0; i < sites; i++) {
         // Adds each line for each website
         let tempWebsiteVar = visitDurations[i][0];
-        datasetLabels.push(tempWebsiteVar);
+        datasetLabels.push(cutName(tempWebsiteVar));
 
         // Iterates through specified dateSpan of history
         let websiteValues = [];
@@ -251,11 +222,6 @@ function getLineBundle(dateSpan) {
     } else if (dateSpan === '12') {
         return lineData12weeks;
     }
-}
-
-function buildInitialLineGraph() {
-    let lineContext = document.getElementById("lineGraph").getContext('2d');
-    let lineChart = buildSingleLineGraph(lineContext, lineData14days[0], lineData14days[1], lineData14days[2], 1);
 }
 
 async function fetchInitialData() {
