@@ -9,7 +9,7 @@ function openPage() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    let divs = document.querySelectorAll('div');
+    let divs = document.querySelectorAll('div.chip');
     for (let i = 0; i < divs.length; i++) {
         divs[i].addEventListener('click', function(e) {
             chrome.tabs.query({
@@ -24,19 +24,34 @@ document.addEventListener('DOMContentLoaded', function() {
                         resolve(result[`${domain}`]);
                     });
                 }).then(function(resolvedObj) {
-                    if (resolvedObj.tags.indexOf(e.target.id) == -1) {
-                        resolvedObj.tags.push(e.target.id);
+                    if (resolvedObj.tags.indexOf(e.target.innerText.slice(0, -5)) == -1) {
+                        resolvedObj.tags.push(e.target.innerText.slice(0, -5));
                         let newObj = {};
                         newObj[domain] = resolvedObj;
                         chrome.storage.local.set(newObj);
                     }
-            
-                    window.close();
                 });
             });
         });
     }
 
-    let button = document.querySelectorAll('button');
+    let button = document.querySelectorAll('a');
     button[0].addEventListener('click', openPage);
+});
+
+$('.chips-initial').material_chip({
+    data: [{
+      tag: 'Social Networking',
+    }, {
+      tag: 'Productivity',
+    }, {
+      tag: 'Entertainment',
+    }],
+
+    placeholder: '+ Tag',
+    secondaryPlaceholder: 'Enter a new tag'
+});
+
+$('.chips').on('chip.select', function(e, chip) {
+    window.close();
 });

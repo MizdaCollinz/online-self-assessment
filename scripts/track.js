@@ -70,7 +70,6 @@ function createAndSet(tab) {
             startTime = new Date();
             obj = {
                 'visits' : [{
-                    'historyitem' : {},
                     'time' : {
                         'start' : `${startTime}`,
                         'end' : '0'
@@ -81,7 +80,6 @@ function createAndSet(tab) {
         } else {
             startTime = new Date();
             let newVisit = {
-                'historyitem' : {},
                 'time' : {
                     'start' : `${startTime}`,
                     'end' : '0'
