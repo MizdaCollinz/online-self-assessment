@@ -39,7 +39,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function(tab) {
-        if (tab.url != 'chrome://newtab/' && tab.url != '') {
+        if (tab.url != 'chrome://newtab/' && tab.url != '' && (tab.url.startsWith('http') || tab.url.startsWith('www'))) {
             let newUrl = new URL(tab.url);
             let domain = newUrl.hostname;
             if (currentUrl != domain) {
@@ -70,7 +70,6 @@ function createAndSet(tab) {
             startTime = new Date();
             obj = {
                 'visits' : [{
-                    'historyitem' : {},
                     'time' : {
                         'start' : `${startTime}`,
                         'end' : '0'
@@ -81,7 +80,6 @@ function createAndSet(tab) {
         } else {
             startTime = new Date();
             let newVisit = {
-                'historyitem' : {},
                 'time' : {
                     'start' : `${startTime}`,
                     'end' : '0'

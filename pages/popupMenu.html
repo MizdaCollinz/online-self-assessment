@@ -2,25 +2,39 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="../styles/materialize.min.css" media="screen,projection">
         <link rel="stylesheet" type="text/css" href="../styles/popup.css">
     </head>
     <body id="body">
-        <div id = 'SNS'>
-            Social Networking
+        <div>
+            <h5>Tags</h5>
         </div>
-        <div id = 'Productivity'>
-            Productivity
-        </div>
-        <div id = 'Entertainment'>
-            Entertainment
-        </div>
-        <div id = 'Other'>
-            Other
+
+        <div class="chips chips-initial">
+            <div class="chip" id = 'SNS'>
+                Social Networking
+                <i class="close material-icons">close</i>
+            </div>
+            <div class="chip" id = 'Productivity'>
+                Productivity
+                <i class="close material-icons">close</i>
+            </div>
+            <div class="chip" id = 'Entertainment'>
+                Entertainment
+                <i class="close material-icons">close</i>
+            </div>
+            <div class="chip" id = 'Other'>
+                Other
+                <i class="close material-icons">close</i>
+            </div>
         </div>
         <br>
-        <button id = 'Visualise'>
-            Visualise
-        </button>
+        <a class="waves-effect waves-light btn">Visualise</a>
+        <br>
+        <br>
     </body>
+    <script src="../scripts/jquery-3.2.1.min.js"></script>
+    <script src="../scripts/materialize.min.js"></script>
     <script src="../scripts/popupScript.js"></script>
 </html>
