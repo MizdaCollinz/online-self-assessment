@@ -78,16 +78,3 @@ async function getTransitionsInDomain(domainName){
         resolve(transitionBreakdown);
     });
 }
-
-//Test code
-async function test(){
-    var results = await historyItemsFromDomain("canvas.auckland.ac.nz");
-    console.log(results);
-    results = await visitCountToDomain("canvas.auckland.ac.nz");
-    console.log(results);
-    results = await getTransitionsInDomain("canvas.auckland.ac.nz");
-    console.log(results);
-    results = await getVisitsByTransition("canvas.auckland.ac.nz", "typed").then(function(resolved){return resolved;});
-    console.log(results);
-}
-test();
