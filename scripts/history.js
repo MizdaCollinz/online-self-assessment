@@ -1,4 +1,4 @@
-// Return the history items associated with a given domain.
+// Returns a promise containing the history items associated with a given domain.
 function historyItemsFromDomain(domainName){
     var historyItems = [];
     return new Promise((resolve, reject) => {
@@ -34,6 +34,8 @@ async function getVisitsByTransition(domainName, transitionType){
     return transitionBreakdown[transitionType];
 }
 
+// Wrapper function used for chaining promises. 
+// Returns a promise containing a transitionBreakdown for a single history item.
 async function transitionCountsByHistoryItem(url, transitionBreakdown){
     return new Promise((resolve, reject) => {
         var urlWrapper = {url:url};  
@@ -46,10 +48,10 @@ async function transitionCountsByHistoryItem(url, transitionBreakdown){
     });
 }
 
-// Return a breakdown of the transitions of a domain's history items.
+// Return a promise containing a breakdown of the transitions of a domain's history items.
 async function getTransitionsInDomain(domainName){
     
-    /* Data will be returned in this format.*/
+    // Data will be returned in this format.
     var transitionBreakdown = {
         "link":0, 
         "typed":0, 
@@ -68,7 +70,7 @@ async function getTransitionsInDomain(domainName){
     var historyItems = await historyItemsFromDomain(domainName);
 
     // Iterate through each visit of each history item, and increment the transitions as appropriate.
-
+    // Standard for loop is needed, not forEach, due to await call.
     return new Promise(async (resolve, reject) => {
         for (let i = 0; i < historyItems.length; i++){
             transitionBreakdown = await transitionCountsByHistoryItem(historyItems[i].url, transitionBreakdown).then(function(resolved){
