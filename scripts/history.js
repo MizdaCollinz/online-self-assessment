@@ -1,9 +1,9 @@
 // Return the history items associated with a given domain.
 function historyItemsFromDomain(domainName){
-    let historyItems = [];
+    var historyItems = [];
     return new Promise((resolve, reject) => {
-        // 10000 should get a decent portion of the user's history without lagging.
-        chrome.history.search({text:"", maxResults:10000}, function(results){
+        // Get all results - this is the biggest number this API allows.
+        chrome.history.search({text:"", maxResults:2147483647}, function(results){
             results.forEach(function(historyItem){
                 // If the URL contains the domain name, add it to the list
                 if (historyItem.url.indexOf(domainName)!==-1){
@@ -15,9 +15,9 @@ function historyItemsFromDomain(domainName){
     });
 }
 
-// Return the sum of the visits to any website in a domain
+// Return the sum of the visits to any website in a domain - Reloading a page is not considered a visit.
 async function visitCountToDomain(domainName){
-    let results = await historyItemsFromDomain(domainName);
+    var results = await historyItemsFromDomain(domainName);
     visitCount = 0;
     results.forEach(function(element) {
         visitCount += element.visitCount;
@@ -25,29 +25,32 @@ async function visitCountToDomain(domainName){
     return visitCount;
 } 
 
-// Return the number of times a user typed in a url in a domain.
-async function typedCountToDomain(domainName){
-    let results = await historyItemsFromDomain(domainName);
-    typedCount = 0;
-    results.forEach(function(element) {
-        typedCount += element.typedCount;
-    }, this);
-    return typedCount;
+// Returns the number of visits of a given transition type
+// Uses the transition types listed here: https://developer.chrome.com/extensions/history#transition_types
+async function getVisitsByTransition(domainName, transitionType){
+    var transitionBreakdown = await getTransitionsInDomain(domainName).then(function(fulfilled){
+        return fulfilled;
+    });
+    return transitionBreakdown[transitionType];
 }
 
-// Return the number of times a user was linked to a page in this domain.
-async function linkedCountToDomain(domainName){
-    let visitCount = await visitCountToDomain(domainName);
-    let typedCount = await typedCountToDomain(domainName);
-    let linkedCount = visitCount - typedCount;
-    return linkedCount;
+async function transitionCountsByHistoryItem(url, transitionBreakdown){
+    return new Promise((resolve, reject) => {
+        var urlWrapper = {url:url};  
+        chrome.history.getVisits(urlWrapper, function(results){
+            results.forEach(function(visitItem){
+                transitionBreakdown[visitItem.transition]++;
+            });
+            resolve(transitionBreakdown);
+        });
+    });
 }
 
 // Return a breakdown of the transitions of a domain's history items.
 async function getTransitionsInDomain(domainName){
     
-    // Data will be returned in this format.
-    let transitionBreakdown = {
+    /* Data will be returned in this format.*/
+    var transitionBreakdown = {
         "link":0, 
         "typed":0, 
         "auto_bookmark":0,
@@ -60,126 +63,31 @@ async function getTransitionsInDomain(domainName){
         "keyword":0,
         "keyword_generated":0
     }
+    
 
-    let historyItems = await historyItemsFromDomain(domainName);
+    var historyItems = await historyItemsFromDomain(domainName);
 
     // Iterate through each visit of each history item, and increment the transitions as appropriate.
-    return new Promise((resolve, reject) => {
-        historyItems.forEach(function(historyItem){
-            let urlWrapper = {url:historyItem.url};  
-            chrome.history.getVisits(urlWrapper, function(results){
-                results.forEach(function(visitItem){
-                    transitionBreakdown[visitItem.transition]++;
-                });
+
+    return new Promise(async (resolve, reject) => {
+        for (let i = 0; i < historyItems.length; i++){
+            transitionBreakdown = await transitionCountsByHistoryItem(historyItems[i].url, transitionBreakdown).then(function(resolved){
+                return resolved;
             });
-        });
+        }
         resolve(transitionBreakdown);
     });
 }
 
 //Test code
 async function test(){
-    let results = await historyItemsFromDomain("canvas.auckland.ac.nz");
+    var results = await historyItemsFromDomain("canvas.auckland.ac.nz");
+    console.log(results);
     results = await visitCountToDomain("canvas.auckland.ac.nz");
-    results = await typedCountToDomain("canvas.auckland.ac.nz");
-    results = await linkedCountToDomain("canvas.auckland.ac.nz");
-    results = await getTransitionsInDomain("reddit.com");
+    console.log(results);
+    results = await getTransitionsInDomain("canvas.auckland.ac.nz");
+    console.log(results);
+    results = await getVisitsByTransition("canvas.auckland.ac.nz", "typed").then(function(resolved){return resolved;});
     console.log(results);
 }
 test();
-
-
-
-
-
-
-
-// Below here is my old code, for reference.
-
-let currentHistoryItem;
-let currentDomainItem;
-let historyQueryCompleted;
-let domainQueryCompleted;
-
-// Promise-based implementation currently suffers from race conditions.
-
-chrome.history.onVisited.addListener(function(result){
-    // Set up the asynchonous calls to the history APIs
-    currentHistoryItem = result;
-
-    /*
-    // Promise-based setup
-    historyQueryCompleted = new Promise(function(resolve, reject){
-        let urlWrapper = {url:currentHistoryItem.url};
-        chrome.history.getVisits(urlWrapper, function(results){
-            let index = results.length - 1;
-            resolve(results[index].transition);
-        });
-    });
-    */
-
-    /*
-    // Promise-based setup
-    domainQueryCompleted = new Promise(function(resolve, reject){
-        let urlWrapper = {url:currentDomainItem.entryUrl};
-        chrome.history.getVisits(urlWrapper, function(results){
-            let index = results.length - 1;
-            resolve(results[index].transition);
-        });
-    });
-    */
-});
-
-// Instantiate the domain item object.
-function createDomainItem(){
-    if (currentHistoryItem == null){
-        chrome.history.search({url:tab.url}, function(results){
-            let index = results.length - 1;
-            currentHistoryItem = results[index];
-            createDomainItem();
-            return;
-        });
-    }
-    entryTransition = getTransitionFromHistory(currentHistoryItem, function(entryTransition){
-        currentDomainItem = {entryUrl:window.location.url, internalClicks:0, transition:entryTransition};
-    });
-}
-
-// Increase the count of clicks within the current domain
-function incrementInternalClicks(){
-    currentDomainItem.internalClicks++;
-}
-
-// Returns the transition for a history item by getting it's most recent visit item.
-function getTransitionFromHistory(historyItem, callback){
-// Callback-based implementation
-    let urlWrapper = {url:historyItem.url};  
-    chrome.history.getVisits(urlWrapper, function(results){
-        let index = results.length - 1;
-        callback((results[index]).transition);
-    });
-    
-/*
-// Promise-based implementation
-    historyQueryCompleted.then(function (completed) {
-        return completed;
-    });
-*/
-}
-
-// Returns the the transition for a domain item by getting it's most recent visit item.
-function getTransitionFromDomain(domainItem, callback){ 
-// Callback-based implementation
-    let urlWrapper = {url:domainItem.entryUrl};  
-    chrome.history.getVisits(urlWrapper, function(results){
-        let index = results.length - 1;
-        callback((results[index]).transition);
-    });
-
-/*
-// Promise-based implementation
-    domainQueryCompleted.then(function (completed) {
-        return completed;
-    });
-*/
-}
