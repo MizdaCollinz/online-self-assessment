@@ -143,22 +143,22 @@ function generatexLabels(dateSpan) {
     if (dateSpan === 14) {
         for (let i = 0; i < dateSpan; i++) {
             let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan + 1 + i);
+            curDate.setDate(curDate.getDate() - i);
             //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
             
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+            xLabels.push(curDate.getDate() + "/" + (curDate.getMonth() + 1));
         }
     } else if (dateSpan === 12) {
         for (let i = 0; i < dateSpan; i++) {
             let curDate = new Date();
-            curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + i*7);
-            //console.log("xLabels entry:" + curDate.getDate() + "/" + curDate.getMonth());
+            curDate.setDate(curDate.getDate() - i*7);
+            //console.log("xLabels entry:" + curDate.getDate() + "/" + (curDate.getMonth() + 1));
             
-            xLabels.push(curDate.getDate() + "/" + curDate.getMonth());
+            xLabels.push(curDate.getDate() + "/" + (curDate.getMonth() + 1));
         }
     }
 
-    return xLabels;
+    return xLabels.reverse();
 }
 
 // JQuery for dynamically updating line graph from dropdown selection
