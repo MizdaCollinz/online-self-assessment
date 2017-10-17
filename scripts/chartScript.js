@@ -83,7 +83,33 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
             labels: xLabels,
             datasets: datasetsArray
         },
-        options: {}
+        options: {
+            tooltips: {
+                mode: 'index',
+                intersect: false
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date - Day/Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Minutes Spent'
+                    }
+                }]
+            }
+
+        }
     });
 
     return lineChart;
