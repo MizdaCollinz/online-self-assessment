@@ -8,7 +8,7 @@
 
     "background" :{
         //Event Page
-        "scripts" :["./scripts/track.js"],
+        "scripts" :["./scripts/track.js", "./scripts/history.js"],
         "persistent": false
     },
 
