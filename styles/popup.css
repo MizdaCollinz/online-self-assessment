@@ -1,35 +1,28 @@
 body {
     text-align: center;
-    width:150px;
+    width:165px;
     margin: 0;
 }
 
-div {
+.btn {
+    background-color: #c62828;
+}
+
+.btn:hover {
+    background-color: #ef5350;
+}
+
+.chip {
+    width: 165px;
     position: relative;
     cursor: pointer;
     height: 30px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     z-index: 1;
-    padding-top: 15px;
     text-decoration: none;
 }
 
-div:hover {
-    background-color: #f1f1f1;
-}
-
-button {
-    height: 45px;
-    width: 150px;
-    margin: 0;
-    background-color: #f9f9f9;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
+.chip:hover {
     background-color: #f1f1f1;
 }
