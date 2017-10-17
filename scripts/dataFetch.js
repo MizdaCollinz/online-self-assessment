@@ -16,7 +16,6 @@ var lineValues12weeks = [];
 // Bar graph data storage
 var barData = [];
 
-
 // Bundles dataset
 function bundleLineData(dateSpan) {
     if (dateSpan === '14') {
@@ -73,7 +72,6 @@ function getVisitDuration(visit) {
     let end = new Date(visit.time.end);
     let duration = getTime(start, end);
 
-
     //Case often occurs when the end time is undefined (Tab is still open, the visit is ongoing)
     if (duration < 0) {
         return 0; //Don't return invalid values
@@ -83,7 +81,6 @@ function getVisitDuration(visit) {
 
 // Return the total visit duration of a single day
 async function getSingleDayVisits(website, day) {
-    
         let singleDayTotal = await getWebsite(website).then(function (resolved) {
             let visits = resolved.visits;
             let duration = 0;
@@ -124,7 +121,6 @@ function getSingleDayVisitDuration(visit, day) {
         if (duration < 0) {
             return 0; //Don't return invalid values
         }
-        //console.log("A duration:" + duration);
         return duration;
     }
 }
@@ -152,7 +148,6 @@ async function getTotalVisits(website) {
         let tags = resolved.tags;
 
         return [duration, tags];
-
     });
 
     return total;
@@ -226,7 +221,6 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
             }
 
             datasetValues.push(websiteValues);
-
         } else if (dateSpan === 12) {
             for (let j = 0; j < dateSpan*7; j++) {
                 curDate = new Date();

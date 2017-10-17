@@ -23,17 +23,12 @@ function buildChart(context, chartType, chartLabels, chartData, extras) {
                 borderWidth: 0.5
             }]
         }
-        
     }, extras);
 
-    console.log(chartJson);
-
    return new Chart(context, chartJson);
-
 }
 
 function buildPieChart(context, chartLabels, chartData){
-
     //Set tooltips to show name and percentage
     let extras = {
         options: {
@@ -57,7 +52,6 @@ function buildPieChart(context, chartLabels, chartData){
     } 
 
     return buildChart(context,'doughnut',chartLabels,chartData,extras);
-
 }
 
 // Build a line graph with the provided dataset and specified time span to look over (in days)
@@ -169,7 +163,6 @@ function cutName(website){
     if (url.startsWith("www.")){
         url = url.replace('www.','');
     }
-    console.log(url);
     
     return url;
 }

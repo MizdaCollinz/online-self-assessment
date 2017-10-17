@@ -34,7 +34,6 @@ function chartTotals() {
 
     let tagContext = document.getElementById("tagChart").getContext('2d');
     let tagChart = buildPieChart(tagContext, tagset, tagvalues);
-
 }
 
 
@@ -83,7 +82,6 @@ function fromSeconds(seconds){
 
 //Build a table row HTML element
 function buildRow(name, value) {
-
     let row = document.createElement('tr');
 
     let nameCell = document.createElement('td');
@@ -105,7 +103,6 @@ function buildRow(name, value) {
 
 // Redraws the line graph depending on dropdown input
 async function drawLineGraph(time) {
-    console.log("time to redraw:" + time);
     let lineContext = document.getElementById("lineGraph").getContext('2d');
     
     // Retrieve top 6 most visited sites from history
@@ -117,7 +114,6 @@ async function drawLineGraph(time) {
     let xLabels = [];
     let datasetLabels = [];
     let datasetValues = [];
-    
     
     // If time selected is 14 days or 12 weeks
     if (time === '14') {
@@ -195,6 +191,7 @@ $('#12weeks').click(function() {
     return false;
 });
 
+//Fetch data, build visuals
 async function setup() { 
     await fetchInitialData().then(() => {
         //Build charts and tables
@@ -208,5 +205,4 @@ async function setup() {
     });
 }
 
-//Fetch data, build visuals
 setup();
