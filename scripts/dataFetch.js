@@ -208,7 +208,7 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
                 curDate = new Date();
                 curDate.setDate(curDate.getDate() - dateSpan + 1 + j);
                 await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                    websiteValues.push(resolve);
+                    websiteValues.push(Math.floor(resolve/60));
                 });
             }
 
@@ -220,12 +220,11 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
                 curDate.setDate(curDate.getDate() - dateSpan*7 + 1 + j);
                 //console.log(curDate);
                 await getSingleDayVisits(tempWebsiteVar, curDate).then(function(resolve) {
-                    websiteValues.push(resolve);
+                    websiteValues.push(Math.floor(resolve/60));
                 });
             }
 
             finalWebsiteValues = convertDurationDaysToWeeks(websiteValues);
-            console.log(finalWebsiteValues);
             datasetValues.push(finalWebsiteValues);
         }
     }
