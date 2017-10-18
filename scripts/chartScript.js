@@ -7,7 +7,7 @@ const colours = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255
 const borderColours = ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)',
 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
 'rgba(198, 40, 40, 1)', 'rgba(26, 35, 126, 1)', 'rgba(0, 96, 100, 1)' ];
-
+var lineChart = null;
 
 // Build a chart with the provided discrete label set and data values
 function buildChart(context, chartType, chartLabels, chartData, extras) {
@@ -23,17 +23,12 @@ function buildChart(context, chartType, chartLabels, chartData, extras) {
                 borderWidth: 0.5
             }]
         }
-        
     }, extras);
 
-    console.log(chartJson);
-
    return new Chart(context, chartJson);
-
 }
 
 function buildPieChart(context, chartLabels, chartData){
-
     //Set tooltips to show name and percentage
     let extras = {
         options: {
@@ -57,7 +52,6 @@ function buildPieChart(context, chartLabels, chartData){
     } 
 
     return buildChart(context,'doughnut',chartLabels,chartData,extras);
-
 }
 
 // Build a line graph with the provided dataset and specified time span to look over (in days)
@@ -73,18 +67,79 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
             lineTension: 0.1
         })
     }
-
-    return new Chart(context, {
+    if (lineChart != null) {
+        lineChart.destroy();
+    }
+    
+    lineChart = new Chart(context, {
         type: 'line',
         data: {
             labels: xLabels,
             datasets: datasetsArray
         },
-        options: {}
+        options: {
+            tooltips: {
+                mode: 'index',
+                intersect: false
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date - Day/Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Minutes Spent'
+                    }
+                }]
+            }
+
+        }
     });
+
+    return lineChart;
 }
 
-
+// Builds a bar graph with the provided x axis labels, and the y axis values
+function buildBarGraph(context, labels, values) {
+    return barChart = new Chart(context, {
+        type: 'horizontalBar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Visits to Domain',
+                backgroundColor: colours[1],
+                borderColor: borderColours[1],
+                borderWidth: 1,
+                data: values
+            }]
+        }, 
+        options: {
+            scaleShowValues: true,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
 
 //Retrieve the specified number of colours for use 
 function getColours(quantity){
@@ -108,5 +163,6 @@ function cutName(website){
     if (url.startsWith("www.")){
         url = url.replace('www.','');
     }
-    console.log(url);
+    
+    return url;
 }
