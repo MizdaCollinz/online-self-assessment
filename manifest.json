@@ -15,7 +15,8 @@
     "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["./scripts/tagDisc.js"],
+            "js": ["./scripts/jquery-3.2.1.min.js", "./scripts/materialize.min.js", "./scripts/tagDisc.js"],
+            "css": ["./styles/materialize.min.css"],
             "run_at": "document_end"
         }
     ],
