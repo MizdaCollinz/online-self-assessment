@@ -21,6 +21,8 @@
     "permissions": [
         "history",
         "tabs",
+        "alarms",
+        "notifications",
         "storage",
         "http://*/*",
         "https://*/*"
