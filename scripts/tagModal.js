@@ -82,7 +82,7 @@ async function buildSiteTable(tbody){
 }
 
 function getTagset(){
-    let defaultTags = ["SNS","Productivity","Entertainment","Other"];
+    let defaultTags = ["Social Networking","Productivity","Entertainment"];
     let usedTags = Object.keys(tagDurations);
     
     for(let tag of usedTags){

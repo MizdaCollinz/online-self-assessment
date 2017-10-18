@@ -1,3 +1,8 @@
+const commonTags = {
+    'Entertainment': ["reddit.com", "netflix.com", "youtube.com"],
+    'Productivity': [],
+    'Social Networking': ["facebook.com", "instagram.com", "twitter.com", "messenger.com"]
+};
 let startTime, endTime, currentTrack, newTrack, key;
 let currentUrl = '';
 let period;
@@ -94,6 +99,17 @@ function createAndSet(tab) {
         let obj;
         if (typeof resolvedObj === 'undefined') {
             startTime = new Date();
+            let siteTag = [];
+            let mapKeys = Object.keys(commonTags);
+            for (let i = 0; i < mapKeys.length; i++) {
+                let sites = commonTags[mapKeys[i]];
+                for (let j = 0; j < sites.length; j++) {
+                    if (key.indexOf(sites[j]) !== -1) {
+                        siteTag.push(mapKeys[i]);
+                        break;
+                    }
+                }
+            }
             obj = {
                 'visits' : [{
                     'time' : {
@@ -101,7 +117,7 @@ function createAndSet(tab) {
                         'end' : '0'
                     }
                 }],
-                'tags' : []
+                'tags' : siteTag
             };
         } else {
             startTime = new Date();

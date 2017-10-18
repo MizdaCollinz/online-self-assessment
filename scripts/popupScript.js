@@ -4,9 +4,12 @@
 
 function openPage() {
     //Create the visualisation tab
-    chrome.tabs.create({url: chrome.extension.getURL('./pages/visuals.html')}, function(tab) {
-        //Callback
-    });   
+    chrome.tabs.create({url: chrome.extension.getURL('./pages/visuals.html')});   
+}
+
+function clearData() {
+    chrome.storage.local.clear();
+    window.close();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -38,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let button = document.querySelectorAll('a');
     button[0].addEventListener('click', openPage);
+    button[1].addEventListener('click', clearData);
 });
 
 $('.chips-initial').material_chip({
