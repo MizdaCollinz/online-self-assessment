@@ -6,6 +6,7 @@ body {
 
 .btn {
     background-color: #c62828;
+    width: 150px;
 }
 
 .btn:hover {
@@ -23,6 +24,9 @@ body {
     text-decoration: none;
 }
 
+.chips {
+    border: none;
+}
 .chip:hover {
     background-color: #f1f1f1;
 }
