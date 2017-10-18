@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         newObj[domain] = resolvedObj;
                         chrome.storage.local.set(newObj);
                     }
+                }).then(function() {
+                    window.close();
                 });
             });
         });
@@ -42,21 +44,4 @@ document.addEventListener('DOMContentLoaded', function() {
     let button = document.querySelectorAll('a');
     button[0].addEventListener('click', openPage);
     button[1].addEventListener('click', clearData);
-});
-
-$('.chips-initial').material_chip({
-    data: [{
-      tag: 'Social Networking',
-    }, {
-      tag: 'Productivity',
-    }, {
-      tag: 'Entertainment',
-    }],
-
-    placeholder: '+ Tag',
-    secondaryPlaceholder: 'Enter a new tag'
-});
-
-$('.chips').on('chip.select', function(e, chip) {
-    window.close();
 });
