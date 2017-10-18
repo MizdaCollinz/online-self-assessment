@@ -13,6 +13,8 @@ var xLabel12weeks = [];
 var lineLabels12weeks =[];
 var lineValues12weeks = [];
 
+// Bar graph data storage
+var barData = [];
 
 // Bundles dataset
 function bundleLineData(dateSpan) {
@@ -25,7 +27,7 @@ function bundleLineData(dateSpan) {
     }
 }
 
-// Calculates 14 days
+// Calculates 14 days of line graph data
 async function prefetchDays() {
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
@@ -36,7 +38,7 @@ async function prefetchDays() {
 }
 
 
-// Calculates 12 weeks
+// Calculates 12 weeks of line graph data
 async function prefetchWeeks() {
     if (visitDurations.length < 6) {
         sites = visitDurations.length;
@@ -45,6 +47,16 @@ async function prefetchWeeks() {
     await generateDatasets(sites, 12, lineLabels12weeks, lineValues12weeks);
     console.log("finished prefetching weeks");    
     
+}
+
+// Calculates and fetches total data required for visits to a domain
+async function prefetchBarData() {
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+    console.log("prefetching bar days");
+    barData = await generateBarData(sites);    
+    console.log("finished prefetching days");
 }
 
 //Return duration between two dates
@@ -60,7 +72,6 @@ function getVisitDuration(visit) {
     let end = new Date(visit.time.end);
     let duration = getTime(start, end);
 
-
     //Case often occurs when the end time is undefined (Tab is still open, the visit is ongoing)
     if (duration < 0) {
         return 0; //Don't return invalid values
@@ -70,7 +81,6 @@ function getVisitDuration(visit) {
 
 // Return the total visit duration of a single day
 async function getSingleDayVisits(website, day) {
-    
         let singleDayTotal = await getWebsite(website).then(function (resolved) {
             let visits = resolved.visits;
             let duration = 0;
@@ -111,7 +121,6 @@ function getSingleDayVisitDuration(visit, day) {
         if (duration < 0) {
             return 0; //Don't return invalid values
         }
-        //console.log("A duration:" + duration);
         return duration;
     }
 }
@@ -139,7 +148,6 @@ async function getTotalVisits(website) {
         let tags = resolved.tags;
 
         return [duration, tags];
-
     });
 
     return total;
@@ -196,7 +204,7 @@ async function calculateTotals() {
 // Generates datasets for line graph plot
 async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
 // Iterates through top 6 sites
-    for (i = 0; i < sites; i++) {
+    for (let i = 0; i < sites; i++) {
         // Adds each line for each website
         let tempWebsiteVar = visitDurations[i][0];
         datasetLabels.push(cutName(tempWebsiteVar));
@@ -213,7 +221,6 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
             }
 
             datasetValues.push(websiteValues);
-
         } else if (dateSpan === 12) {
             for (let j = 0; j < dateSpan*7; j++) {
                 curDate = new Date();
@@ -228,6 +235,20 @@ async function generateDatasets(sites, dateSpan, datasetLabels, datasetValues) {
             datasetValues.push(finalWebsiteValues);
         }
     }
+}
+
+// generates data for bar graph
+async function generateBarData(sites) {
+    let barValues = [];
+    for (let i = 0; i < sites; i++) {
+        let websiteVar = visitDurations[i][0];
+        // Uses methods from history.js to gather data from Chrome History API
+        let visitCount = await visitCountToDomain(websiteVar).then(function(resolve) {
+            barValues.push(resolve);
+        });
+    }
+
+    return barValues
 }
 
 function convertDurationDaysToWeeks(inputDays) {
@@ -264,4 +285,5 @@ async function fetchLineGraphData() {
     await prefetchWeeks();
     bundleLineData('14');
     bundleLineData('12');
+    await prefetchBarData();
 }

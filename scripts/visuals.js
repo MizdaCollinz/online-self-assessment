@@ -34,7 +34,6 @@ function chartTotals() {
 
     let tagContext = document.getElementById("tagChart").getContext('2d');
     let tagChart = buildPieChart(tagContext, tagset, tagvalues);
-
 }
 
 
@@ -83,7 +82,6 @@ function fromSeconds(seconds){
 
 //Build a table row HTML element
 function buildRow(name, value) {
-
     let row = document.createElement('tr');
 
     let nameCell = document.createElement('td');
@@ -105,7 +103,6 @@ function buildRow(name, value) {
 
 // Redraws the line graph depending on dropdown input
 async function drawLineGraph(time) {
-    console.log("time to redraw:" + time);
     let lineContext = document.getElementById("lineGraph").getContext('2d');
     
     // Retrieve top 6 most visited sites from history
@@ -118,7 +115,6 @@ async function drawLineGraph(time) {
     let datasetLabels = [];
     let datasetValues = [];
     
-    
     // If time selected is 14 days or 12 weeks
     if (time === '14') {
         xLabels = generatexLabels(14);
@@ -130,11 +126,30 @@ async function drawLineGraph(time) {
         datasetLabels = lineData12weeks[0];
         datasetValues = lineData12weeks[1];
     }
-
-    console.log("datalabels: " + datasetLabels);
-    console.log("datavalues: " + datasetValues);
     
     lineChart = buildSingleLineGraph(lineContext, xLabels, datasetLabels, datasetValues, 1);
+}
+
+// Draws the bar graph which displays the number of visits to the top 6 visited domains
+async function drawBarGraph() {
+    let lineContext = document.getElementById("barGraph").getContext('2d');
+    // Retrieve top 6 most visited sites from history
+    let sites = 6;
+    if (visitDurations.length < 6) {
+        sites = visitDurations.length;
+    }
+
+    let barLabels = [];
+    let barValues = [];
+
+    // Generates x axis labels for bar graph
+    for (let i = 0; i < sites; i++) {
+        barLabels.push(cutName(visitDurations[i][0]));
+    }
+    barValues = barData;
+
+    // Draws the bar Graph
+    let barChart = buildBarGraph(lineContext, barLabels, barValues);
 }
 
 // Generates xLabels for line graph depending on how long and what scale it is measured in
@@ -176,6 +191,7 @@ $('#12weeks').click(function() {
     return false;
 });
 
+//Fetch data, build visuals
 async function setup() { 
     await fetchInitialData().then(() => {
         //Build charts and tables
@@ -185,8 +201,8 @@ async function setup() {
     
     await fetchLineGraphData().then(() => {
         drawLineGraph('14');
+        drawBarGraph();
     });
 }
 
-//Fetch data, build visuals
 setup();

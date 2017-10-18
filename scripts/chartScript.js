@@ -23,17 +23,12 @@ function buildChart(context, chartType, chartLabels, chartData, extras) {
                 borderWidth: 0.5
             }]
         }
-        
     }, extras);
 
-    console.log(chartJson);
-
    return new Chart(context, chartJson);
-
 }
 
 function buildPieChart(context, chartLabels, chartData){
-
     //Set tooltips to show name and percentage
     let extras = {
         options: {
@@ -57,7 +52,6 @@ function buildPieChart(context, chartLabels, chartData){
     } 
 
     return buildChart(context,'doughnut',chartLabels,chartData,extras);
-
 }
 
 // Build a line graph with the provided dataset and specified time span to look over (in days)
@@ -115,7 +109,37 @@ function buildSingleLineGraph(context, xLabels, datasetLabels, datasetValues, ti
     return lineChart;
 }
 
-
+// Builds a bar graph with the provided x axis labels, and the y axis values
+function buildBarGraph(context, labels, values) {
+    return barChart = new Chart(context, {
+        type: 'horizontalBar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Visits to Domain',
+                backgroundColor: colours[1],
+                borderColor: borderColours[1],
+                borderWidth: 1,
+                data: values
+            }]
+        }, 
+        options: {
+            scaleShowValues: true,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
 
 //Retrieve the specified number of colours for use 
 function getColours(quantity){
@@ -139,7 +163,6 @@ function cutName(website){
     if (url.startsWith("www.")){
         url = url.replace('www.','');
     }
-    console.log(url);
     
     return url;
 }
