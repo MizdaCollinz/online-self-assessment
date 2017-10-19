@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         resolve(result[`${domain}`]);
                     });
                 }).then(function(resolvedObj) {
-                    if (resolvedObj.tags.indexOf(e.target.innerText.slice(0, -5)) == -1) {
-                        resolvedObj.tags.push(e.target.innerText.slice(0, -5));
+                    if (resolvedObj.tags.indexOf(e.target.innerText.slice(0, -6)) == -1) {
+                        resolvedObj.tags.push(e.target.innerText.slice(0, -6));
                         let newObj = {};
                         newObj[domain] = resolvedObj;
                         chrome.storage.local.set(newObj);
